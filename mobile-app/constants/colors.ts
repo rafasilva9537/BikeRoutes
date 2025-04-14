@@ -1,9 +1,9 @@
 const colors = {
-    text: "#11181C",
-    background: '#ffffff',
-    primary: "#abb8c4",
-    accent: "#6365Ef",
-    secondary: "#d3d0f6"
+    text: "#0b1411",
+    background: '#f3faf7',
+    primary: "#32ce8d",
+    accent: "#40fbac",
+    secondary: "#8df1c7"
 }
 
 export {
