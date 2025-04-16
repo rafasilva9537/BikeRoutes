@@ -1,5 +1,5 @@
+import * as React from "react";
 import { Link } from "expo-router";
-import React from "react";
 import { FlatList, Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import bikeRoutes from "@/mock_data/bike-routes"
 import { colors } from "@/constants/colors";
