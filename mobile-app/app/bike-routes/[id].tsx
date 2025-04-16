@@ -1,12 +1,14 @@
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import bikeRoutes from "@/mock_data/bike-routes";
 import { TimerSvg, DistanceSvg, StarSvg } from "@/constants/icons";
+import { colors } from "@/constants/colors";
 
 const BikeRouteDetails = () => {
   const { id } = useLocalSearchParams();
   const routeId = Number(id);
+  const router = useRouter();
 
   const route = bikeRoutes.find((route) => route.id === routeId);
 
@@ -45,6 +47,12 @@ const BikeRouteDetails = () => {
       </View>
 
       <Text style={styles.speed}>Velocidade média: {route.average_speed} km/h</Text>
+
+      <Image source={require("@/assets/images/maps_route.png")} style={styles.image} />
+
+      <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+        <Text style={styles.buttonText}>Voltar</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -52,7 +60,7 @@ const BikeRouteDetails = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    alignItems: "center"
+    alignItems: "center",
   },
   image: {
     width: "100%",
@@ -85,6 +93,20 @@ const styles = StyleSheet.create({
   speed: {
     fontSize: 16,
     marginTop: 10,
+    marginBottom: 20,
+  },
+  button: {
+    width: "100%",
+    marginTop: 24,
+    backgroundColor: colors.primary,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   }
 });
 
