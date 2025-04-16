@@ -1,0 +1,50 @@
+const users = [
+    {
+        id: 1,
+        firsName: "Marcos",
+        lastName: "Nunes",
+        email: "marcos@email.com",
+        phone: "61999999999",
+        photo: require("@/assets/images/profile.png"),
+    },
+    {
+        id: 2,
+        firsName: "Ana",
+        lastName: "Silva",
+        email: "ana.silva@email.com",
+        phone: "61999999999",
+        photo: require("@/assets/images/profile.png"),
+    },
+    {
+        id: 3,
+        firsName: "João",
+        lastName: "Ferreira",
+        email: "joao.ferreira@email.com",
+        phone: "61999999999",
+        photo: require("@/assets/images/profile.png"),
+    },
+    {
+        id: 4,
+        firsName: "Beatriz",
+        lastName: "Rocha",
+        email: "beatriz.rocha@email.com",
+        phone: "61999999999",
+        photo: require("@/assets/images/profile.png"),
+    },
+    {
+        id: 5,
+        firsName: "Lucas",
+        lastName: "Mendes",
+        email: "lucas.mendes@email.com",
+        phone: "61999999999",
+        photo: require("@/assets/images/profile.png"),
+    },
+    {
+        id: 6,
+        firsName: "Carla",
+        lastName: "Almeida",
+        email: "carla.almeida@email.com",
+        phone: "61999999999",
+        photo: require("@/assets/images/profile.png"),
+    }
+];
