@@ -5,7 +5,7 @@ const users = [
         lastName: "Nunes",
         email: "marcos@email.com",
         phone: "61999999999",
-        photo: require("@/assets/images/profile.png"),
+        photo: "https://images.pexels.com/photos/31630200/pexels-photo-31630200/free-photo-of-gato-preto-e-branco.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     },
     {
         id: 2,
@@ -13,7 +13,7 @@ const users = [
         lastName: "Silva",
         email: "ana.silva@email.com",
         phone: "61999999999",
-        photo: require("@/assets/images/profile.png"),
+        photo: "https://images.pexels.com/photos/731564/pexels-photo-731564.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     },
     {
         id: 3,
@@ -21,7 +21,7 @@ const users = [
         lastName: "Ferreira",
         email: "joao.ferreira@email.com",
         phone: "61999999999",
-        photo: require("@/assets/images/profile.png"),
+        photo: "https://images.pexels.com/photos/31644561/pexels-photo-31644561/free-photo-of-luzes-a-noite-no-japao.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     },
     {
         id: 4,
@@ -29,7 +29,7 @@ const users = [
         lastName: "Rocha",
         email: "beatriz.rocha@email.com",
         phone: "61999999999",
-        photo: require("@/assets/images/profile.png"),
+        photo: "https://images.pexels.com/photos/31613570/pexels-photo-31613570/free-photo-of-retrato-caprichoso-em-um-campo-de-flores-encantador.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     },
     {
         id: 5,
@@ -37,7 +37,7 @@ const users = [
         lastName: "Mendes",
         email: "lucas.mendes@email.com",
         phone: "61999999999",
-        photo: require("@/assets/images/profile.png"),
+        photo: "https://images.pexels.com/photos/31615928/pexels-photo-31615928/free-photo-of-andar-de.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     },
     {
         id: 6,
@@ -45,6 +45,8 @@ const users = [
         lastName: "Almeida",
         email: "carla.almeida@email.com",
         phone: "61999999999",
-        photo: require("@/assets/images/profile.png"),
+        photo: "https://images.pexels.com/photos/31612073/pexels-photo-31612073/free-photo-of-idoso-aproveita-vista-da-praia-com-bicicleta.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     }
 ];
+
+export default users;
