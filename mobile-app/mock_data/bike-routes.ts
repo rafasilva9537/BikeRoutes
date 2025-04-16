@@ -68,7 +68,7 @@ export const bikeRoutes = [
   {
     id: 7,
     userId: 1,
-    title: "Praias Selvagens do Rio - RS",
+    title: "Praias Selvagens do Rio - RJ",
     image: "https://images.pexels.com/photos/17299048/pexels-photo-17299048/free-photo-of-mar-praia-litoral-ferias.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Trilha off-road até praias isoladas do Rio de Janeiro. Exige condicionamento e bike apropriada.",
     duration: 120,

@@ -3,6 +3,14 @@ import bikeRoutes from "@/mock_data/bike-routes";
 import RouteBox from "@/components/RouteBox";
 import { colors } from "@/constants/colors";
 
+const Header = () => {
+    return  (
+      <View>
+        <Text style={styles.headerTitle}>Favoritos</Text>
+      </View>
+    );
+  }
+
 const Favorites = () => {
     const favoritesRoutes = [];
     favoritesRoutes.push(bikeRoutes[3]);
@@ -12,8 +20,8 @@ const Favorites = () => {
     return (
         <View style={styles.homepageContainer}>
         <FlatList
-            ListHeaderComponent={<Text style={styles.homeTitle}>Favoritos</Text>}
-            ListHeaderComponentStyle={{ backgroundColor: colors.accent, marginBottom: 15 }}
+            ListHeaderComponent={<Header />}
+            ListHeaderComponentStyle={styles.header}
             data= {favoritesRoutes}
             renderItem={({item}) => <RouteBox {... item}/>}
             keyExtractor={(item) => item.id.toString()}
@@ -30,12 +38,19 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.background,
     },
-    homeTitle: {
+    header: {
+        marginBottom: 15
+    },
+    headerTitle: {
         alignSelf: "center",
-        marginTop: 10,
         marginBottom: 10,
         fontSize: 30,
         fontWeight: "bold",
+        backgroundColor: colors.accent,
+        width: "100%",
+        textAlign: "center",
+        paddingTop: 10,
+        paddingBottom: 10,
     },
     routeList: {
         width: "100%",
