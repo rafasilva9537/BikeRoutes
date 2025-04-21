@@ -1,14 +1,11 @@
 import { colors } from "@/constants/colors";
 import React from "react";
-import { Text, View, Image, StyleSheet } from "react-native";
+import { Text, View, Image, StyleSheet, ScrollView, FlatList } from "react-native";
+import users from "@/mock_data/users";
+import bikeRoutes from "@/mock_data/bike-routes";
+import CompactRouteBox from "@/components/CompactRouteBox";
 
-const client = { 
-    firsName: "Marcos", 
-    lastName: "Nunes",
-    email: "marcos@email.com",
-    phone: "61999999999",
-    photo: require("@/assets/images/profile.png"),
-}
+const user = users[0];
 
 const ProfileText = ({children}: any) => {
     return (
@@ -16,39 +13,76 @@ const ProfileText = ({children}: any) => {
     );
 }
 
-const Profile = () => {
+const ProfileInfo = () => {
     return (
-        <View style={styles.container}>
-            <Image source={client.photo} style={styles.profilePhoto} />
+        <View style={styles.profileInfoContainer}>
+            <Image source={ {uri: user.photo} } style={styles.profilePhoto} />
             <View style={styles.profileInfo}>
-                <ProfileText>Nome: {client.firsName} {client.lastName}</ProfileText>
-                <ProfileText>Email: {client.email}</ProfileText>
-                <ProfileText>Celular: {client.phone}</ProfileText>
+                <ProfileText>Nome: {user.firsName} {user.lastName}</ProfileText>
+                <ProfileText>Email: {user.email}</ProfileText>
+                <ProfileText>Celular: {user.phone}</ProfileText>
             </View>
+            <Text style={styles.myRoutesHeader}>Minhas Rotas</Text>
         </View>
     );
 }
 
+const Profile = () => {
+    const userBikeRoutes = bikeRoutes.filter(route => route.userId === 1);
+
+    return (
+        <FlatList
+            ListHeaderComponent={ <ProfileInfo /> }
+            data= {userBikeRoutes}
+            renderItem={({item}) => <CompactRouteBox {... item}/>}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={styles.routeList}
+        />
+    );
+}
+
 const styles = StyleSheet.create({
-    container: {
+    profileInfoContainer: {
         flex: 1,
         alignItems: "center",
-        padding: 20,
+        paddingTop: 20,
+        paddingRight: 20,
+        paddingLeft: 20,
         backgroundColor: colors.background
     },
+    myRoutesHeader: {
+        marginTop: 25,
+        fontSize: 25,
+        fontWeight: "bold",
+        textAlign: "left"
+    },
     profilePhoto: {
-        width: 250,
-        height: 250,
+        width: 200,
+        height: 200,
         borderRadius: 200,
-        marginBottom: 20,
+        marginBottom: 15,
         backgroundColor: "black"
     },
     profileText: {
         fontSize: 20,
+        padding: 10,
+        borderColor: "grey",
+        borderWidth: 1,
+        borderRadius: 5,
+        width: "100%",
     },
     profileInfo: {
-        alignItems: "flex-start"
-    }
+        justifyContent: 'center',
+        gap: 10,
+        flexDirection: "row",
+        flexWrap: "wrap",
+        width: "90%"
+    },
+    routeList: {
+        width: "100%",
+        gap: 15,
+        backgroundColor: colors.background,
+    },
 });
 
 export default Profile;

@@ -1,6 +1,6 @@
 import { Text, View, FlatList, StyleSheet } from "react-native";
 import bikeRoutes from "@/mock_data/bike-routes";
-import RouteBox from "@/components/RouteBox";
+import CompactRouteBox from "@/components/CompactRouteBox";
 import { colors } from "@/constants/colors";
 
 const Header = () => {
@@ -23,7 +23,7 @@ const Favorites = () => {
             ListHeaderComponent={<Header />}
             ListHeaderComponentStyle={styles.header}
             data= {favoritesRoutes}
-            renderItem={({item}) => <RouteBox {... item}/>}
+            renderItem={({item}) => <CompactRouteBox {... item}/>}
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={styles.routeList}
         />
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.background,
     },
     header: {
-        marginBottom: 15
+        marginBottom: 1
     },
     headerTitle: {
         alignSelf: "center",

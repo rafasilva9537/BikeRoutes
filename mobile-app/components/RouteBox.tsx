@@ -14,7 +14,7 @@ interface BikeRoute {
     distance: number, // km
     rating: number, // 0 to 5
     average_speed: number // km/h
-  }
+}
 
 const RouteBox = (bikeRoute: BikeRoute) => {
     const user = users.filter(user => user.id == bikeRoute.userId)[0];
@@ -55,18 +55,18 @@ const styles = StyleSheet.create({
         width: "90%",
         alignItems: "center",
         alignSelf: "center"
-        },
-        routeTitle: {
+    },
+    routeTitle: {
         fontSize: 16,
         fontWeight: "bold",
-        },
-        routeImage: {
+    },
+    routeImage: {
         width: "100%",
         height: 150,
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5
-        },
-        routeInfoContainer: {
+    },
+    routeInfoContainer: {
         flexDirection: "row",
         backgroundColor: colors.secondary,
         width: "100%",
@@ -75,21 +75,21 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 5,
         padding: 5,
         gap: 10
-        },
-        profileImage: {
-        width: "14%", 
+    },
+    profileImage: {
+        width: "14%",
         height: 45,
         borderRadius: 30
-        },
-        routeBoxInfoDetails: {
+    },
+    routeBoxInfoDetails: {
         width: "86%",
         flexDirection: "row",
         justifyContent: "space-around"
-        },
-        routeIconInfoContainer: {
+    },
+    routeIconInfoContainer: {
         flexDirection: "row",
         alignItems: "center",
-        }
+    }
 });
 
 export default RouteBox;
