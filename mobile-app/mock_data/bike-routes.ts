@@ -9,6 +9,8 @@ export const bikeRoutes = [
     distance: 24,
     rating: 4.8,
     average_speed: 6.9,
+    latitude: -28.3955,
+    longitude: -49.3161,
   },
   {
     id: 2,
@@ -20,6 +22,8 @@ export const bikeRoutes = [
     distance: 18,
     rating: 4.6,
     average_speed: 7.2,
+    latitude: -23.5284,
+    longitude: -47.1362,
   },
   {
     id: 3,
