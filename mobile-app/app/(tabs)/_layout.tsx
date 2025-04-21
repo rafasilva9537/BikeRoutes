@@ -10,12 +10,6 @@ interface TabIconProps {
     SvgIcon: React.FC<SvgProps> // used to show 'imported svg'
 }
 
-const TabText = ({children} : any) => {
-    return (
-        <Text style={{fontSize: 14}}>{children}</Text>
-    )
-}
-
 const TabIcon = ({ focused, SvgIcon }: TabIconProps) => {
     if(focused){
         return (

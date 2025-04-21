@@ -4,6 +4,7 @@ import ProfileSvg from "@/assets/icons/profile-circle.svg";
 import PlusCircleSvg from "@/assets/icons/plus-circle.svg";
 import DistanceSvg from "@/assets/icons/diameter.svg";
 import TimerSvg from "@/assets/icons/timer.svg";
+import SearchSvg from "@/assets/icons/search.svg";
 
 export {
     HomeSvg,
@@ -11,5 +12,6 @@ export {
     ProfileSvg,
     PlusCircleSvg,
     DistanceSvg,
-    TimerSvg
+    TimerSvg,
+    SearchSvg
 };

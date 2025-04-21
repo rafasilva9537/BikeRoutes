@@ -1,26 +1,29 @@
-const bikeRoutes = [
+export const bikeRoutes = [
   {
     id: 1,
+    userId: 1,
     title: "Desafio na Serra do Rio do Rastro - SC",
     image: "https://images.pexels.com/photos/30352730/pexels-photo-30352730.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Estrada sinuosa em meio à serra catarinense. Percurso exigente com paisagens deslumbrantes, ideal para ciclistas experientes.",
     duration: 210,
     distance: 24,
     rating: 4.8,
-    average_speed: 6.9
+    average_speed: 6.9,
   },
   {
     id: 2,
+    userId: 2,
     title: "Cicloturismo na Rota do Vinho - SP",
     image: "https://images.pexels.com/photos/31561191/pexels-photo-31561191/free-photo-of-fileiras-de-vinhedos-exuberantes-sob-um-ceu-azul-claro.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Passeio agradável entre vinícolas e colinas suaves em São Roque. Ideal para quem curte um pedal com paradas gastronômicas.",
     duration: 150,
     distance: 18,
     rating: 4.6,
-    average_speed: 7.2
+    average_speed: 7.2,
   },
   {
     id: 3,
+    userId: 3,
     title: "Costa do Descobrimento - Bahia",
     image: "https://images.pexels.com/photos/31569973/pexels-photo-31569973/free-photo-of-baia-de-todos-os-santos.png?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Rota costeira com belas praias, falésias e vilas históricas. Recomendado para ciclistas intermediários.",
@@ -31,6 +34,7 @@ const bikeRoutes = [
   },
   {
     id: 4,
+    userId: 4,
     title: "Chapada Diamantina Selvagem - BA",
     image: "https://images.pexels.com/photos/19238829/pexels-photo-19238829/free-photo-of-montanhas-homem-caminhando-andando.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Trilha técnica e desafiadora no coração da Chapada. Terreno misto com subidas e descidas intensas.",
@@ -41,6 +45,7 @@ const bikeRoutes = [
   },
   {
     id: 5,
+    userId: 5,
     title: "Beira Rio Guaíba - Porto Alegre",
     image: "https://images.pexels.com/photos/544292/pexels-photo-544292.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Rota urbana e tranquila ao redor do lago Guaíba. Ideal para iniciantes e passeios em família.",
@@ -51,6 +56,7 @@ const bikeRoutes = [
   },
   {
     id: 6,
+    userId: 6,
     title: "Circuito das Águas - Minas",
     image: "https://images.pexels.com/photos/3996439/pexels-photo-3996439.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Rota entre estâncias hidrominerais e matas de Minas. Subidas leves e boa estrutura para cicloturistas.",
@@ -61,7 +67,8 @@ const bikeRoutes = [
   },
   {
     id: 7,
-    title: "Praias Selvagens do Rio - Rio de Janeiro",
+    userId: 1,
+    title: "Praias Selvagens do Rio - RJ",
     image: "https://images.pexels.com/photos/17299048/pexels-photo-17299048/free-photo-of-mar-praia-litoral-ferias.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Trilha off-road até praias isoladas do Rio de Janeiro. Exige condicionamento e bike apropriada.",
     duration: 120,
@@ -71,6 +78,7 @@ const bikeRoutes = [
   },
   {
     id: 8,
+    userId: 2,
     title: "Estrada Parque Pantanal - MS",
     image: "https://images.pexels.com/photos/18731467/pexels-photo-18731467/free-photo-of-estrada-via-panorama-vista.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Percurso plano em estrada de terra cercado por vida selvagem. Ideal para quem busca contato com a natureza.",
@@ -81,6 +89,7 @@ const bikeRoutes = [
   },
   {
     id: 9,
+    userId: 3,
     title: "Volta à Ilha de Fernando de Noronha - Pernambuco",
     image: "https://images.pexels.com/photos/19421782/pexels-photo-19421782/free-photo-of-baia-do-sancho-em-fernando-de-noronha.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Roteiro curto, porém intenso, com paisagens paradisíacas. Estrada asfaltada e trilhas com alto grau de beleza cênica.",
@@ -91,6 +100,7 @@ const bikeRoutes = [
   },
   {
     id: 10,
+    userId: 4,
     title: "Pedal no Sertão do Cariri - CE",
     image: "https://images.pexels.com/photos/13799203/pexels-photo-13799203.jpeg",
     description: "Percurso em meio à caatinga e formações rochosas. Exige hidratação e preparo, com forte apelo cultural e histórico.",
@@ -101,6 +111,7 @@ const bikeRoutes = [
   },
   {
     id: 11,
+    userId: 5,
     title: "Desafio na Serra do Rio do Rastro - SC",
     image: "https://images.pexels.com/photos/30352730/pexels-photo-30352730.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Estrada sinuosa em meio à serra catarinense. Percurso exigente com paisagens deslumbrantes, ideal para ciclistas experientes.",
@@ -111,6 +122,7 @@ const bikeRoutes = [
   },
   {
     id: 12,
+    userId: 6,
     title: "Cicloturismo na Rota do Vinho - SP",
     image: "https://images.pexels.com/photos/31561191/pexels-photo-31561191/free-photo-of-fileiras-de-vinhedos-exuberantes-sob-um-ceu-azul-claro.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Passeio agradável entre vinícolas e colinas suaves em São Roque. Ideal para quem curte um pedal com paradas gastronômicas.",
@@ -121,6 +133,7 @@ const bikeRoutes = [
   },
   {
     id: 13,
+    userId: 1,
     title: "Costa do Descobrimento - Bahia",
     image: "https://images.pexels.com/photos/31569973/pexels-photo-31569973/free-photo-of-baia-de-todos-os-santos.png?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Rota costeira com belas praias, falésias e vilas históricas. Recomendado para ciclistas intermediários.",
@@ -131,6 +144,7 @@ const bikeRoutes = [
   },
   {
     id: 14,
+    userId: 2,
     title: "Chapada Diamantina Selvagem - BA",
     image: "https://images.pexels.com/photos/19238829/pexels-photo-19238829/free-photo-of-montanhas-homem-caminhando-andando.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     description: "Trilha técnica e desafiadora no coração da Chapada. Terreno misto com subidas e descidas intensas.",

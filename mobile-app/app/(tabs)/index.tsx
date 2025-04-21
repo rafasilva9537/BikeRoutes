@@ -1,57 +1,61 @@
-import * as React from "react";
-import { Link } from "expo-router";
-import { FlatList, Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
-import bikeRoutes from "@/mock_data/bike-routes"
+import React, { useState } from "react";
+import { FlatList, Text, View, StyleSheet, TextInput } from "react-native";
+import bikeRoutes from "@/mock_data/bike-routes";
 import { colors } from "@/constants/colors";
-import { TimerSvg, DistanceSvg, StarSvg } from "@/constants/icons";
+import RouteBox from "@/components/RouteBox";
+import { SearchSvg } from "@/constants/icons";
 
-interface BikeRoute {
+interface User {
   id: number,
-  title: string,
-  image: string,
-  description: string,
-  duration: number, // minutes
-  distance: number, // km
-  rating: number, // 0 to 5
-  average_speed: number // km/h
+  firsName: string,
+  lastName: string,
+  email: string,
+  phone: string,
+  photo: string,
 }
 
-const RouteBox = (bikeRoute: BikeRoute) =>{ 
-  return (
-    <Link style={styles.routeBoxContainer} href={`/bike-routes/${bikeRoute.id}`} asChild>
-      <TouchableOpacity>
-        <Image source={ {uri: bikeRoute.image} } style={styles.routeImage}/>
-        <View style={styles.routeInfoContainer}>
-          <Text style={styles.routeTitle}>{bikeRoute.title}</Text>
-          <View style={styles.routeBoxInfoDetails} >
-            <View style={styles.routeIconInfoContainer}>
-              <DistanceSvg/>
-              <Text>{bikeRoute.distance} km</Text>
-            </View>
-
-            <View style={styles.routeIconInfoContainer}>
-              <TimerSvg/>
-              <Text>{Math.floor(bikeRoute.duration/60)}:{(bikeRoute.duration%60).toString().padEnd(2,"0")} hrs</Text>
-            </View>
-
-            <View style={styles.routeIconInfoContainer}>
-              <StarSvg fill={"yellow"}/>
-              <Text>{bikeRoute.rating}</Text>
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
-    </Link>
+const Header = ({setState}: any) => {
+  return  (
+    <View>
+      <Text style={styles.headerTitle}>Rotas de Bicicleta</Text>
+      <View style={styles.searchBar}>
+        <SearchSvg style={styles.searchIcon}/>
+        <TextInput 
+          style={styles.searchInput}
+          placeholder="Pesquisar por rota"
+          onChangeText={(text) => setState(text)}
+        />
+      </View>
+    </View>
   );
 }
 
 const Index = () => {
+  const [searchText, setSearchText] = useState("");
+
+  if(searchText === "")
+  {
+    return (
+      <View style={styles.homepageContainer}>
+        <FlatList
+          ListHeaderComponent={ <Header setState={setSearchText}/> }
+          ListHeaderComponentStyle={ styles.header }
+          data= {bikeRoutes}
+          renderItem={({item}) => <RouteBox {... item}/>}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.routeList}
+        />
+      </View>
+    );
+  }
+
+  const filteredRoutes = bikeRoutes.filter((route) => route.title.toLowerCase().includes(searchText.toLowerCase()));
   return (
     <View style={styles.homepageContainer}>
       <FlatList
-        ListHeaderComponent={<Text style={styles.homeTitle}>Rotas de Bicicleta</Text>}
-        ListHeaderComponentStyle={{ backgroundColor: colors.accent, marginBottom: 15 }}
-        data= {bikeRoutes}
+        ListHeaderComponent={ <Header setState={setSearchText}/> }
+        ListHeaderComponentStyle={ styles.header }
+        data= {filteredRoutes}
         renderItem={({item}) => <RouteBox {... item}/>}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.routeList}
@@ -60,56 +64,52 @@ const Index = () => {
   );
 }
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   homepageContainer: {
     margin: 0,
     padding: 0,
     flex: 1,
     backgroundColor: colors.background,
   },
-  homeTitle: {
+  header: {
+    marginBottom: 15,
+  },
+  headerTitle: {
     alignSelf: "center",
-    marginTop: 10,
     marginBottom: 10,
     fontSize: 30,
     fontWeight: "bold",
+    backgroundColor: colors.accent,
+    width: "100%",
+    textAlign: "center",
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  searchBar: {
+    borderWidth: 1,
+    borderColor: colors.text,
+    borderRadius: 25,
+    backgroundColor: colors.secondary,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+    maxHeight: 40,
+    alignSelf: "center",
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  searchInput: {
+    width: "91%",
+    borderRadius: 25,
+  },
+  searchIcon: {
+
   },
   routeList: {
     width: "100%",
-    gap: 15
+    gap: 15,
   },
-  routeBoxContainer: {
-    width: "90%",
-    alignItems: "center",
-    alignSelf: "center"
-  },
-  routeTitle: {
-    fontSize: 16,
-    fontWeight: "bold"
-  },
-  routeImage: {
-    width: "100%",
-    height: 150,
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5
-  },
-  routeInfoContainer: {
-    backgroundColor: colors.secondary,
-    width: "100%",
-    alignItems: "center",
-    borderBottomLeftRadius: 5,
-    borderBottomRightRadius: 5,
-    padding: 5
-  },
-  routeBoxInfoDetails: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-around"
-  },
-  routeIconInfoContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  }
 });
 
 export default Index;
