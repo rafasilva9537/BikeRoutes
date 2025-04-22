@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import bikeRoutes from "@/mock_data/bike-routes";
+import users from "@/mock_data/users";
 import { TimerSvg, DistanceSvg, StarSvg } from "@/constants/icons";
 import { colors } from "@/constants/colors";
 
@@ -11,6 +12,7 @@ const BikeRouteDetails = () => {
   const router = useRouter();
 
   const route = bikeRoutes.find((route) => route.id === routeId);
+  const user = users.find((user) => user.id === route?.userId);
 
   if (!route) {
     return (
@@ -21,7 +23,11 @@ const BikeRouteDetails = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
+    <ScrollView
+      style={styles.scrollContainer}
+      contentContainerStyle={styles.scrollContent}
+    >
       <Image source={{ uri: route.image }} style={styles.image} />
       <Text style={styles.title}>{route.title}</Text>
       <Text style={styles.description}>{route.description}</Text>
@@ -48,17 +54,38 @@ const BikeRouteDetails = () => {
 
       <Text style={styles.speed}>Velocidade média: {route.average_speed} km/h</Text>
 
-      <Image source={require("@/assets/images/maps_route.png")} style={styles.image} />
+      <View style={styles.user}>
+        <Image source={{uri: user?.photo}} style={styles.userPhoto}/>
+        <Text style={styles.username}>{user?.firsName} {user?.lastName}</Text>
+      </View>
 
-      <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-        <Text style={styles.buttonText}>Voltar</Text>
-      </TouchableOpacity>
+      <Image source={require("@/assets/images/maps_route.png")} style={styles.image} />
+      
+      <View style={styles.ratingContainer}>
+        <StarSvg fill={"yellow"}></StarSvg>
+        <StarSvg fill={"yellow"}></StarSvg>
+        <StarSvg fill={"yellow"}></StarSvg>
+        <StarSvg fill={"yellow"}></StarSvg>
+        <StarSvg></StarSvg>
+      </View>
     </ScrollView>
+
+    <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+        <Text style={styles.buttonText}>Voltar</Text>
+    </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
+  },
+  scrollContainer: {
+    width: "100%",
+    height: "92%",
+  },
+  scrollContent: {
     padding: 20,
     alignItems: "center",
   },
@@ -92,12 +119,42 @@ const styles = StyleSheet.create({
   },
   speed: {
     fontSize: 16,
-    marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
+  },
+  user: {
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: "grey",
+    width: "90%",
+    padding: 5,
+    gap: 10
+  },
+  userPhoto: {
+    width: 40, 
+    height: 40,
+    borderRadius: 30,
+  },
+  username: {
+    fontWeight: "bold"
+  },
+  ratingContainer: {
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: "grey",
+    width: "90%",
+    padding: 5,
+    gap: 10,
+    justifyContent: "space-evenly"
   },
   button: {
-    width: "100%",
-    marginTop: 24,
+    width: "90%",
+    marginTop: 10,
     backgroundColor: colors.primary,
     paddingVertical: 12,
     borderRadius: 8,
