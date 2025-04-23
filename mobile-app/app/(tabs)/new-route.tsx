@@ -60,7 +60,7 @@ const NewRoute = () => {
       );
     } else {
       const novoMarcador = {
-        id: `rota-${++routeIdCounter}`,
+        id: `${++routeIdCounter}º Ponto`,
         latitude: coordinate.latitude,
         longitude: coordinate.longitude,
       };
