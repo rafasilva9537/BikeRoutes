@@ -1,0 +1,6 @@
+@BikeRoutesApi_HostAddress = http://localhost:5043
+
+GET {{BikeRoutesApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,7 @@
+﻿services:
+  bikeroutesapi:
+    image: bikeroutesapi
+    build:
+      context: .
+      dockerfile: BikeRoutesApi/Dockerfile
+
