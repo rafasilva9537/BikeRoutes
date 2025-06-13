@@ -1,7 +1,11 @@
 ﻿services:
-  bikeroutesapi:
-    image: bikeroutesapi
+  api:
     build:
-      context: .
-      dockerfile: BikeRoutesApi/Dockerfile
-
+      context: ./BikeRoutesApi
+      target: final
+    ports:
+      - "5043:8080"
+    container_name: bikeroutes_api
+    hostname: bikeroutes_api_host
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
