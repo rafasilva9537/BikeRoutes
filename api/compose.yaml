@@ -9,3 +9,27 @@
     hostname: bikeroutes_api_host
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    container_name: bikeroutes_db
+    hostname: bikeroutes_db_host
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
