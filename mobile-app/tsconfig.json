@@ -1,8 +1,6 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "baseUrl": "",
-    "traceResolution": true,
     "strict": true,
     "paths": {
       "@/*": [
@@ -17,6 +15,3 @@
     "expo-env.d.ts"
   ]
 }
-
-
-
