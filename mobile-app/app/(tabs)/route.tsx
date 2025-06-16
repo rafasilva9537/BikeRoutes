@@ -1,167 +1,176 @@
-import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-} from "react-native";
-import MapView, { Marker, Polyline, LatLng } from "react-native-maps";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Text, View, StyleSheet, FlatList, TouchableOpacity, Dimensions } from "react-native";
+import MapView, { Marker, MapPressEvent, Region, Polyline } from "react-native-maps";
+import { requestForegroundPermissionsAsync, getCurrentPositionAsync, LocationObject } from "expo-location";
+import { colors } from "@/constants/colors";
+import { bikeRoutes } from "@/mock_data/bike-routes";
 
-const GOOGLE_API_KEY = "KEY_API_GOOGLE";
+// Contador de IDs de cada rota
+let routeIdCounter = 0;
 
-const Route = () => {
-  const [originText, setOriginText] = useState("");
-  const [destinationText, setDestinationText] = useState("");
-  const [routeCoords, setRouteCoords] = useState<LatLng[]>([]);
-  const [originMarker, setOriginMarker] = useState<LatLng | null>(null);
-  const [destinationMarker, setDestinationMarker] = useState<LatLng | null>(null);
+// Componente que renderiza o mapa e gerencia as lógicas (marcadores, localização..)
+const NewRoute = () => {
+  const [location, setLocation] = useState<LocationObject | null>(null);
+  const [mapRegion, setMapRegion] = useState<Region | null>(null);
 
-  const geocodeAddress = async (address: string) => {
-    const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json`,
-      {
-        params: {
-          address,
-          key: GOOGLE_API_KEY,
-        },
-      }
-    );
-    const location = response.data.results[0]?.geometry.location;
-    if (!location) throw new Error("Endereço não encontrado");
-    return {
-      latitude: location.lat,
-      longitude: location.lng,
-    };
-  };
+  const [markers, setMarkers] = useState<Array<{
+    id: string;
+    latitude: number;
+    longitude: number;
+  }>>([]);
 
-  const fetchRoute = async () => {
-    try {
-      const origin = await geocodeAddress(originText);
-      const destination = await geocodeAddress(destinationText);
+  // Função para pedir/pegar permissão de localização
+  async function requestLocationPermissions() {
+    const { granted } = await requestForegroundPermissionsAsync();
 
-      setOriginMarker(origin);
-      setDestinationMarker(destination);
+    if (granted) {
+      const currentPosition = await getCurrentPositionAsync();
+      setLocation(currentPosition);
 
-      const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${GOOGLE_API_KEY}`;
+      console.log("Localização atual =>", currentPosition);
 
-      const response = await axios.get(url);
-      const points = decodePolyline(
-        response.data.routes[0].overview_polyline.points
-      );
-      setRouteCoords(points);
-    } catch (error) {
-      console.error("Erro ao obter rota:", error);
-    }
-  };
-
-  const decodePolyline = (t: string): LatLng[] => {
-    let points: LatLng[] = [];
-    let index = 0, lat = 0, lng = 0;
-
-    while (index < t.length) {
-      let b, shift = 0, result = 0;
-      do {
-        b = t.charCodeAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      const dlat = (result & 1) ? ~(result >> 1) : result >> 1;
-      lat += dlat;
-
-      shift = 0;
-      result = 0;
-      do {
-        b = t.charCodeAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      const dlng = (result & 1) ? ~(result >> 1) : result >> 1;
-      lng += dlng;
-
-      points.push({
-        latitude: lat / 1e5,
-        longitude: lng / 1e5,
+      setMapRegion({
+        latitude: currentPosition.coords.latitude,
+        longitude: currentPosition.coords.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
       });
     }
+  }
 
-    return points;
+  useEffect(() => { requestLocationPermissions(); }, []);
+
+  // Quando tocar no mapa, adiciona ou remove marcador
+  const handleMapPress = (event: MapPressEvent) => {
+    const { coordinate } = event.nativeEvent;
+
+    const marcadorExistente = markers.find(
+      (m) =>
+        m.latitude === coordinate.latitude &&
+        m.longitude === coordinate.longitude
+    );
+
+    if (marcadorExistente) {
+      setMarkers((prev) =>
+        prev.filter(
+          (m) =>
+            m.latitude !== coordinate.latitude ||
+            m.longitude !== coordinate.longitude
+        )
+      );
+    } else {
+      const novoMarcador = {
+        id: `${++routeIdCounter}º Ponto`,
+        latitude: coordinate.latitude,
+        longitude: coordinate.longitude,
+      };
+
+      setMarkers((prev) => [...prev, novoMarcador]);
+      console.log("Marcador adicionado:", novoMarcador);
+    }
+  };
+
+  const handleMarkerSelect = (marker: typeof markers[0]) => {
+    if (mapRegion) {
+      setMapRegion({
+        ...mapRegion,
+        latitude: marker.latitude,
+        longitude: marker.longitude,
+      });
+    }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchBar}>
-        <TextInput
-          placeholder="Origem"
-          style={styles.input}
-          value={originText}
-          onChangeText={setOriginText}
-        />
-        <TextInput
-          placeholder="Destino"
-          style={styles.input}
-          value={destinationText}
-          onChangeText={setDestinationText}
-        />
-        <TouchableOpacity style={styles.button} onPress={fetchRoute}>
-          <Text style={styles.buttonText}>Traçar Rota</Text>
-        </TouchableOpacity>
-      </View>
+      {mapRegion && (
+        <MapView
+          style={styles.map}
+          region={mapRegion}
+          onPress={handleMapPress}
+        >
+          {markers.length > 1 && (
+            <Polyline
+              coordinates={markers.map((m) => ({
+                latitude: m.latitude,
+                longitude: m.longitude,
+              }))}
+              strokeColor="#FF0000"
+              strokeWidth={4}
+            />
+          )}
 
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: -23.55052,
-          longitude: -46.633308,
-          latitudeDelta: 0.1,
-          longitudeDelta: 0.1,
-        }}
-      >
-        {originMarker && <Marker coordinate={originMarker} pinColor="green" />}
-        {destinationMarker && <Marker coordinate={destinationMarker} pinColor="red" />}
-        {routeCoords.length > 0 && (
-          <Polyline coordinates={routeCoords} strokeColor="blue" strokeWidth={4} />
-        )}
-      </MapView>
+
+          {markers.map((marker) => (
+            <Marker
+              key={marker.id}
+              coordinate={{
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+              }}
+              title={`ID: ${marker.id}`}
+            />
+          ))}
+        </MapView>
+      )}
+
+    
+      <View style={styles.sidebar}>
+        <Text style={styles.sidebarTitle}>Rotas</Text>
+
+        <FlatList
+          data={markers}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.routeItem}
+              onPress={() => handleMarkerSelect(item)}
+            >
+              <Text style={styles.routeText}>{item.id}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
     </View>
   );
 };
 
+export default NewRoute;
+
+const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  searchBar: {
     flexDirection: "row",
-    padding: 10,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "space-between",
-    zIndex: 10,
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 6,
-    padding: 8,
-    marginRight: 5,
-    backgroundColor: "#f9f9f9",
-  },
-  button: {
-    backgroundColor: "#4a90e2",
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
+    backgroundColor: colors.background,
   },
   map: {
     flex: 1,
+    width: '75%',
+  },
+  sidebar: {
+    width: '25%',
+    backgroundColor: colors.background,
+    padding: 10,
+    borderLeftWidth: 1,
+    borderLeftColor: colors.primary,
+  },
+  sidebarTitle: {
+    marginBottom: 10,
+    fontSize: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.primary,
+  },
+  routeItem: {
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.primary,
+  },
+  routeText: {
+    fontSize: 16,
+    textAlign: "center",
+    borderColor: colors.primary,
+    backgroundColor: colors.secondary,
+    borderRadius: 5,
+    borderWidth: 1,
   },
 });
-
-export default Route;
