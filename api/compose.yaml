@@ -14,7 +14,7 @@
         condition: service_healthy
         restart: true
   db:
-    image: postgres
+    image: postgis/postgis
     ports:
       - "5432:5432"
     container_name: bikeroutes_db
@@ -29,7 +29,7 @@
       timeout: 5s
       retries: 10
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - bikeroutes_data:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  bikeroutes_data:
