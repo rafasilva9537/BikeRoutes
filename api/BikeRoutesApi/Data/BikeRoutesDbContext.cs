@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using BikeRoutesApi.Entities;
+﻿using BikeRoutesApi.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BikeRoutesApi.Data;
 
-public partial class BikeRoutesDbContext : DbContext
+public class BikeRoutesDbContext : DbContext
 {
     public BikeRoutesDbContext()
     {
@@ -16,12 +14,8 @@ public partial class BikeRoutesDbContext : DbContext
     {
     }
 
-    public virtual DbSet<BikeRoute> BikeRoutes { get; set; }
-
-    public virtual DbSet<User> Users { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DefaultConnection", x => x.UseNetTopologySuite());
+    public DbSet<BikeRoute> BikeRoutes { get; set; }
+    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,7 +34,6 @@ public partial class BikeRoutesDbContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("now()")
                 .HasColumnName("created_at");
-            entity.Property(e => e.DataRoutesId).HasColumnName("data_routes_id");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Distance).HasColumnName("distance");
             entity.Property(e => e.Duration).HasColumnName("duration");
@@ -61,10 +54,10 @@ public partial class BikeRoutesDbContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("now()")
                 .HasColumnName("updated_at");
-            entity.Property(e => e.UsersId).HasColumnName("users_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.Users).WithMany(p => p.BikeRoutes)
-                .HasForeignKey(d => d.UsersId)
+                .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("bike_routes_users_id_fkey");
         });
@@ -96,9 +89,5 @@ public partial class BikeRoutesDbContext : DbContext
                 .HasColumnName("phone");
             entity.Property(e => e.Photo).HasColumnName("photo");
         });
-
-        OnModelCreatingPartial(modelBuilder);
     }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

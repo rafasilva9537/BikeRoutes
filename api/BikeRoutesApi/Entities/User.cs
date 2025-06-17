@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace BikeRoutesApi.Entities;
 
-namespace BikeRoutesApi.Entities;
-
-public partial class User
+public class User
 {
     public long Id { get; set; }
 
-    public string FirstName { get; set; } = null!;
+    public string FirstName { get; set; } = string.Empty;
 
-    public string LastName { get; set; } = null!;
+    public string LastName { get; set; } = string.Empty;
 
-    public string Email { get; set; } = null!;
+    public string Email { get; set; } = string.Empty;
 
-    public string? Phone { get; set; }
+    public string Phone { get; set; } = string.Empty;
 
-    public string? Photo { get; set; }
+    public string Photo { get; set; } = string.Empty;
 
-    public virtual ICollection<BikeRoute> BikeRoutes { get; set; } = new List<BikeRoute>();
+    public ICollection<BikeRoute> BikeRoutes { get; set; } = new List<BikeRoute>();
 }

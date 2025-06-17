@@ -1,8 +1,8 @@
 CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS bike_routes;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
     id bigint GENERATED ALWAYS AS IDENTITY,
@@ -18,7 +18,6 @@ CREATE TABLE users (
 CREATE TABLE bike_routes (
     id bigint GENERATED ALWAYS AS IDENTITY,
     users_id bigint NOT NULL,
-    data_routes_id bigint NOT NULL,
     title character varying NOT NULL,
     photo text,
     description text NOT NULL,

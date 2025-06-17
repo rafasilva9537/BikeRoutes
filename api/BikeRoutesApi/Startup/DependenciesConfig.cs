@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using BikeRoutesApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BikeRoutesApi.Startup;
 
@@ -12,5 +13,13 @@ public static class DependenciesConfig
             {
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
+    }
+
+    public static void AddCustomDbContext(this WebApplicationBuilder builder)
+    {
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddDbContext<BikeRoutesDbContext>(options => 
+            options.UseNpgsql(connectionString, x => x.UseNetTopologySuite())
+        );
     }
 }

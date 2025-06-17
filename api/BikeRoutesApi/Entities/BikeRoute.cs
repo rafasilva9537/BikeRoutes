@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
 
 namespace BikeRoutesApi.Entities;
 
-public partial class BikeRoute
+public class BikeRoute
 {
     public long Id { get; set; }
 
-    public long UsersId { get; set; }
+    public long UserId { get; set; }
 
-    public long DataRoutesId { get; set; }
+    public string Title { get; set; } = string.Empty;
 
-    public string Title { get; set; } = null!;
+    public string Photo { get; set; } = string.Empty;
 
-    public string? Photo { get; set; }
-
-    public string Description { get; set; } = null!;
+    public string Description { get; set; } = string.Empty;
 
     public double Duration { get; set; }
 
@@ -26,9 +22,9 @@ public partial class BikeRoute
 
     public double? AverageSpeed { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
 
-    public DateTime UpdatedAt { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
 
     public Point StartPath { get; set; } = null!;
 
@@ -36,5 +32,5 @@ public partial class BikeRoute
 
     public LineString? PathRoutes { get; set; }
 
-    public virtual User Users { get; set; } = null!;
+    public User Users { get; set; } = null!;
 }
