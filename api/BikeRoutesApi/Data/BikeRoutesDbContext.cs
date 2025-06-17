@@ -43,7 +43,7 @@ public class BikeRoutesDbContext : DbContext
             entity.Property(e => e.PathRoutes)
                 .HasColumnType("geography(LineString,4326)")
                 .HasColumnName("path_routes");
-            entity.Property(e => e.Photo).HasColumnName("photo");
+            entity.Property(e => e.Image).HasColumnName("image");
             entity.Property(e => e.Rating).HasColumnName("rating");
             entity.Property(e => e.StartPath)
                 .HasColumnType("geography(Point,4326)")
