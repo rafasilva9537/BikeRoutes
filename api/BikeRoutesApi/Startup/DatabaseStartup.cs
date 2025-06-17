@@ -87,9 +87,11 @@ public static class DatabaseStartup
                 Rating = 4.8,
                 AverageSpeed = 6.9,
                 StartPath = new Point(-28.3955, -49.3161),
-                EndPath = new Point(-28.3970, -49.3157)
+                EndPath = new Point(-28.3970, -49.3157),
+                CreatedAt = new DateTimeOffset(2025, 01, 01, 10, 30, 45, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 01, 03, 14, 45, 30, TimeSpan.Zero)
             },
-            new() 
+            new()
             {
                 UserId = 2,
                 Title = "Cicloturismo na Rota do Vinho - SP",
@@ -100,7 +102,9 @@ public static class DatabaseStartup
                 Rating = 4.6,
                 AverageSpeed = 7.2,
                 StartPath = new Point(-23.5284, -47.1362),
-                EndPath = new Point(-23.5298, -47.1353)
+                EndPath = new Point(-23.5298, -47.1353),
+                CreatedAt = new DateTimeOffset(2025, 01, 15, 09, 15, 00, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 01, 15, 09, 15, 00, TimeSpan.Zero)
             },
             new()
             {
@@ -113,7 +117,9 @@ public static class DatabaseStartup
                 Rating = 4.7,
                 AverageSpeed = 8.8,
                 StartPath = new Point(-16.4145, -39.0650),
-                EndPath = new Point(-16.4138, -39.0670)
+                EndPath = new Point(-16.4138, -39.0670),
+                CreatedAt = new DateTimeOffset(2025, 02, 01, 08, 45, 15, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 02, 01, 08, 45, 15, TimeSpan.Zero)
             },
             new()
             {
@@ -126,22 +132,26 @@ public static class DatabaseStartup
                 Rating = 4.9,
                 AverageSpeed = 6.0,
                 StartPath = new Point(-12.4708, -41.6078),
-                EndPath = new Point(-12.4722, -41.6095)
+                EndPath = new Point(-12.4722, -41.6095),
+                CreatedAt = new DateTimeOffset(2025, 02, 15, 14, 30, 00, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 02, 16, 12, 20, 00, TimeSpan.Zero)
             },
-            new() 
+            new()
             {
                 UserId = 5,
                 Title = "Beira Rio Guaíba - Porto Alegre",
-                Image = "https://images.pexels.com/photos/544292/pexels-photo-544292.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", 
+                Image = "https://images.pexels.com/photos/544292/pexels-photo-544292.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                 Description = "Rota urbana e tranquila ao redor do lago Guaíba. Ideal para iniciantes e passeios em família.",
                 Duration = 90,
                 Distance = 12,
                 Rating = 4.5,
                 AverageSpeed = 8.0,
                 StartPath = new Point(-30.0346, -51.2177),
-                EndPath = new Point(-30.0359, -51.2195)
+                EndPath = new Point(-30.0359, -51.2195),
+                CreatedAt = new DateTimeOffset(2025, 03, 01, 07, 00, 45, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 03, 01, 07, 00, 45, TimeSpan.Zero)
             },
-            new() 
+            new()
             {
                 UserId = 6,
                 Title = "Circuito das Águas - Minas",
@@ -152,7 +162,9 @@ public static class DatabaseStartup
                 Rating = 4.3,
                 AverageSpeed = 8.3,
                 StartPath = new Point(-22.2484, -45.6960),
-                EndPath = new Point(-22.2498, -45.6975)
+                EndPath = new Point(-22.2498, -45.6975),
+                CreatedAt = new DateTimeOffset(2025, 03, 15, 16, 45, 30, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 03, 16, 10, 20, 00, TimeSpan.Zero)
             },
             new()
             {
@@ -165,7 +177,9 @@ public static class DatabaseStartup
                 Rating = 4.6,
                 AverageSpeed = 7.5,
                 StartPath = new Point(-23.0323, -43.5536),
-                EndPath = new Point(-23.0345, -43.5561)
+                EndPath = new Point(-23.0345, -43.5561),
+                CreatedAt = new DateTimeOffset(2025, 04, 01, 12, 00, 00, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 04, 01, 12, 00, 00, TimeSpan.Zero)
             },
             new()
             {
@@ -178,7 +192,9 @@ public static class DatabaseStartup
                 Rating = 4.7,
                 AverageSpeed = 8.9,
                 StartPath = new Point(-19.5511, -56.7072),
-                EndPath = new Point(-19.5523, -56.7058)
+                EndPath = new Point(-19.5523, -56.7058),
+                CreatedAt = new DateTimeOffset(2025, 04, 15, 10, 15, 45, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 04, 15, 10, 30, 30, TimeSpan.Zero)
             },
             new()
             {
@@ -191,7 +207,9 @@ public static class DatabaseStartup
                 Rating = 4.9,
                 AverageSpeed = 7.0,
                 StartPath = new Point(-3.8431, -32.4233),
-                EndPath = new Point(-3.8425, -32.4250)
+                EndPath = new Point(-3.8425, -32.4250),
+                CreatedAt = new DateTimeOffset(2025, 06, 01, 18, 00, 00, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 06, 01, 22, 30, 00, TimeSpan.Zero)
             },
             new()
             {
@@ -204,7 +222,9 @@ public static class DatabaseStartup
                 Rating = 4.4,
                 AverageSpeed = 7.0,
                 StartPath = new Point(-7.2929, -39.3155),
-                EndPath = new Point(-7.2940, -39.3171)
+                EndPath = new Point(-7.2940, -39.3171),
+                CreatedAt = new DateTimeOffset(2025, 06, 16, 07, 00, 00, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 06, 16, 07, 15, 30, TimeSpan.Zero)
             },
             new()
             {
@@ -217,7 +237,9 @@ public static class DatabaseStartup
                 Rating = 4.8,
                 AverageSpeed = 6.9,
                 StartPath = new Point(-28.3955, -49.3161),
-                EndPath = new Point(-28.3970, -49.3157)
+                EndPath = new Point(-28.3970, -49.3157),
+                CreatedAt = new DateTimeOffset(2025, 06, 17, 08, 00, 00, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 06, 17, 08, 00, 00, TimeSpan.Zero)
             },
             new()
             {
@@ -230,7 +252,9 @@ public static class DatabaseStartup
                 Rating = 4.6,
                 AverageSpeed = 7.2,
                 StartPath = new Point(-23.5284, -47.1362),
-                EndPath = new Point(-23.5298, -47.1353)
+                EndPath = new Point(-23.5298, -47.1353),
+                CreatedAt = new DateTimeOffset(2025, 06, 17, 08, 00, 00, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 06, 17, 08, 00, 00, TimeSpan.Zero)
             },
             new()
             {
@@ -243,7 +267,9 @@ public static class DatabaseStartup
                 Rating = 4.7,
                 AverageSpeed = 8.8,
                 StartPath = new Point(-16.4145, -39.0650),
-                EndPath = new Point(-16.4138, -39.0670)
+                EndPath = new Point(-16.4138, -39.0670),
+                CreatedAt = new DateTimeOffset(2025, 06, 17, 08, 00, 00, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 06, 17, 08, 00, 00, TimeSpan.Zero)
             },
             new()
             {
@@ -256,7 +282,9 @@ public static class DatabaseStartup
                 Rating = 4.9,
                 AverageSpeed = 6.0,
                 StartPath = new Point(-12.4708, -41.6078),
-                EndPath = new Point(-12.4722, -41.6095)
+                EndPath = new Point(-12.4722, -41.6095),
+                CreatedAt = new DateTimeOffset(2025, 06, 17, 08, 00, 00, TimeSpan.Zero),
+                UpdatedAt = new DateTimeOffset(2025, 06, 17, 08, 00, 00, TimeSpan.Zero)
             }
         ];
         
