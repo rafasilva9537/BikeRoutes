@@ -56,7 +56,7 @@ public class BikeRoutesDbContext : DbContext
                 .HasColumnName("updated_at");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.Users).WithMany(p => p.BikeRoutes)
+            entity.HasOne(d => d.User).WithMany(p => p.BikeRoutes)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("bike_routes_users_id_fkey");

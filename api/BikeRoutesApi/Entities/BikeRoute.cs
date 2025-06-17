@@ -32,5 +32,5 @@ public class BikeRoute
 
     public LineString? PathRoutes { get; set; }
 
-    public User Users { get; set; } = null!;
+    public User User { get; set; } = null!;
 }
