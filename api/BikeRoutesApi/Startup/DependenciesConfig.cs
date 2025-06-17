@@ -19,7 +19,10 @@ public static class DependenciesConfig
     {
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services.AddDbContext<BikeRoutesDbContext>(options => 
-            options.UseNpgsql(connectionString, x => x.UseNetTopologySuite())
+            options.UseNpgsql(
+                connectionString, 
+                optionsBuilder => optionsBuilder.UseNetTopologySuite()
+            )
         );
     }
 }
