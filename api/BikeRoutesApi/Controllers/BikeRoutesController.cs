@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BikeRoutesApi.Data;
+using BikeRoutesApi.Dtos;
+using BikeRoutesApi.Entities;
+using BikeRoutesApi.Mappers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BikeRoutesApi.Controllers;
 
@@ -6,21 +11,53 @@ namespace BikeRoutesApi.Controllers;
 [Route("bike-routes")]
 public class BikeRoutesController : ControllerBase
 {
-    [HttpGet]
-    public ActionResult<string> GetAllBikeRoutes()
+    private readonly ILogger<BikeRoutesController> _logger;
+    private readonly BikeRoutesDbContext _dbContext;
+    
+    public BikeRoutesController(ILogger<BikeRoutesController> logger, BikeRoutesDbContext dbContext)
     {
-        return Ok();
+        _logger = logger;
+        _dbContext = dbContext;
     }
-
-    [HttpPost]
-    public ActionResult<string> CreateBikeRoute()
+    
+    
+    [HttpGet]
+    public async Task<ActionResult<BikeRouteMainInfoDto>> GetAllBikeRoutes()
     {
+        var bikeRoutesDtos = await _dbContext
+            .BikeRoutes
+            .Include(br => br.User)
+            .Select(br => br.ToBikeRouteMainInfoDto())
+            .ToListAsync();
+        
+        return Ok(bikeRoutesDtos);
+    }
+    
+    [HttpPost]
+    public async Task<ActionResult<BikeRouteDetailsDto>> CreateBikeRoute()
+    {
+        var user = await _dbContext.Users.FirstOrDefaultAsync(br => br.Id == 1);
+
+        var createdBikeRoute = new BikeRoute()
+        {
+            
+        };
+        
         return Ok();
     }
     
-    [HttpGet("{id:int}")]
-    public ActionResult<string> GetBikeRouteById(int recipeId)
+    [HttpGet("{routeId:long}")]
+    public async Task<ActionResult<BikeRouteDetailsDto>> GetBikeRouteById(long routeId)
     {
-        return Ok();
+        var bikeRoute = await _dbContext.BikeRoutes
+            .Include(br => br.User)
+            .FirstOrDefaultAsync(br => br.Id == routeId);
+        
+        
+        if(bikeRoute is null) return NotFound();
+        
+        var bikeRouteDto = bikeRoute.ToBikeRouteDetailsDto();
+        
+        return Ok(bikeRouteDto);
     }
 }

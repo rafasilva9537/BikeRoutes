@@ -8,3 +8,10 @@ public record UserDto(
     string Phone,
     string Photo
 );
+
+public record UserMainInfoDto(
+    long Id,
+    string FirstName,
+    string LastName,
+    string Photo
+);
