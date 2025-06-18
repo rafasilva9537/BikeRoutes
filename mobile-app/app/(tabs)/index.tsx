@@ -7,6 +7,7 @@ import axios from 'axios';
 import { API_URL } from "@/constants/api";
 import BikeRouteMainInfo from "@/interfaces/BikeRouteMainInfo";
 import { useIsFocused } from '@react-navigation/native';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface User {
   id: number,
@@ -47,8 +48,6 @@ const Index = () => {
       } catch (error) {
         console.error(error);
       }
-      console.log("Bike routes fetched successfully: ");
-      console.log("test");
     };
     fetchData();
   }, [isFocused]);
@@ -56,7 +55,7 @@ const Index = () => {
   if(searchText === "")
   {
     return (
-      <View style={styles.homepageContainer}>
+      <SafeAreaView style={styles.homepageContainer}>
         <FlatList
           ListHeaderComponent={ <Header setState={setSearchText}/> }
           ListHeaderComponentStyle={ styles.header }
@@ -65,13 +64,13 @@ const Index = () => {
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.routeList}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 
   const filteredRoutes = bikeRoutes.filter((route) => route.title.toLowerCase().includes(searchText.toLowerCase()));
   return (
-    <View style={styles.homepageContainer}>
+    <SafeAreaView style={styles.homepageContainer}>
       <FlatList
         ListHeaderComponent={ <Header setState={setSearchText}/> }
         ListHeaderComponentStyle={ styles.header }
@@ -80,7 +79,7 @@ const Index = () => {
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.routeList}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
