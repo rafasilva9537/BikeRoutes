@@ -46,6 +46,19 @@ public static class BikeRouteMappers
             )
         );
     }
+
+    public static MyBikeRouteDto ToMyBikeRouteDto(this BikeRoute bikeRouteEntity)
+    {
+        return new MyBikeRouteDto(
+            Id: bikeRouteEntity.Id,
+            Title: bikeRouteEntity.Title,
+            Image: bikeRouteEntity.Image,
+            Duration: bikeRouteEntity.Duration,
+            Distance: bikeRouteEntity.Distance,
+            Rating: bikeRouteEntity.Rating,
+            UserName: $"{bikeRouteEntity.User?.FirstName} {bikeRouteEntity.User?.LastName}"
+        );
+    }
     
     // Dto to Entity
     public static BikeRoute ToBikeRoute(this CreateBikeRouteDto createBikeRouteDto)

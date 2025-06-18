@@ -32,3 +32,13 @@ public record BikeRouteMainInfoDto(
     double Rating,
     UserMainInfoDto UserMainInfo
 );
+
+public record MyBikeRouteDto(
+    long Id,
+    string Title,
+    string Image,
+    double Duration,
+    double Distance,
+    double Rating,
+    string UserName
+);
