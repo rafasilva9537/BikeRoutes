@@ -9,15 +9,6 @@ import BikeRouteMainInfo from "@/interfaces/BikeRouteMainInfo";
 import { useIsFocused } from '@react-navigation/native';
 import { SafeAreaView } from "react-native-safe-area-context";
 
-interface User {
-  id: number,
-  firstName: string,
-  lastName: string,
-  email: string,
-  phone: string,
-  photo: string,
-}
-
 const Header = ({setState}: any) => {
   return  (
     <SafeAreaView edges={["top"]}>

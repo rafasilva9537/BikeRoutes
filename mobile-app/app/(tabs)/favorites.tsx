@@ -1,9 +1,12 @@
 import { Text, View, FlatList, StyleSheet } from "react-native";
-import bikeRoutes from "@/mock_data/bike-routes";
 import CompactRouteBox from "@/components/CompactRouteBox";
 import { colors } from "@/constants/colors";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { API_URL } from "@/constants/api";
+import axios from "axios";
+import { useIsFocused } from "@react-navigation/native";
+import BikeRouteMainInfo from "@/interfaces/BikeRouteMainInfo";
 
 const Header = () => {
     return  (
@@ -14,10 +17,21 @@ const Header = () => {
   }
 
 const Favorites = () => {
-    const favoritesRoutes = [];
-    favoritesRoutes.push(bikeRoutes[3]);
-    favoritesRoutes.push(bikeRoutes[5]);
-    favoritesRoutes.push(bikeRoutes[0]);
+    const [favoritesRoutes, setFavoritesRoutes] = useState<BikeRouteMainInfo[]>([]);
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const options = { method: 'GET', url: `${API_URL}/bike-routes/favorites` };
+            try {
+                const { data } = await axios.request(options);
+                setFavoritesRoutes(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, [isFocused]);
 
     return (
         <SafeAreaView edges={["top"]} style={styles.homepageContainer}>
