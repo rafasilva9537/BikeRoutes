@@ -38,7 +38,7 @@ const Layout = () => {
                 options={{
                     title: "Homepage",
                     headerShown: false,
-                    tabBarIcon: ({focused}) => <TabIcon focused={focused} SvgIcon={HomeSvg} />
+                    tabBarIcon: ({ focused }: { focused: boolean }) => <TabIcon focused={focused} SvgIcon={HomeSvg} />
                 }}
             />
             <Tabs.Screen 
@@ -46,7 +46,7 @@ const Layout = () => {
                 options={{
                     title: "Nova Rota",
                     headerShown: false,
-                    tabBarIcon: ({focused}) => <TabIcon focused={focused} SvgIcon={PlusCircleSvg} />
+                    tabBarIcon: ({ focused }: { focused: boolean }) => <TabIcon focused={focused} SvgIcon={PlusCircleSvg} />
                 }}
             />
             <Tabs.Screen 
@@ -54,7 +54,7 @@ const Layout = () => {
                 options={{
                     title: "Favoritos",
                     headerShown: false,
-                    tabBarIcon: ({focused}) => <TabIcon focused={focused} SvgIcon={StarSvg} />
+                    tabBarIcon: ({ focused }: { focused: boolean }) => <TabIcon focused={focused} SvgIcon={StarSvg} />
                 }}
             />
             <Tabs.Screen 
@@ -62,7 +62,7 @@ const Layout = () => {
                 options={{
                     title: "Perfil",
                     headerShown: false,
-                    tabBarIcon: ({focused}) => <TabIcon focused={focused} SvgIcon={ProfileSvg} />
+                    tabBarIcon: ({ focused }: { focused: boolean }) => <TabIcon focused={focused} SvgIcon={ProfileSvg} />
                 }}
             />
         </Tabs>

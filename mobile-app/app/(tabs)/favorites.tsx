@@ -2,6 +2,7 @@ import { Text, View, FlatList, StyleSheet } from "react-native";
 import bikeRoutes from "@/mock_data/bike-routes";
 import CompactRouteBox from "@/components/CompactRouteBox";
 import { colors } from "@/constants/colors";
+import React from "react";
 
 const Header = () => {
     return  (
