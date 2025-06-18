@@ -6,7 +6,7 @@ public static class GeographyUtils
 {
     public static double CalculateHaversineDistance(Point point, Point point2)
     {
-        const double R = 6371 * 1000; // Mean earth radius in meters
+        const double R = 6371; // Mean earth radius in km
         var dLat = ToRadians(point2.X - point.X);
         var dLon = ToRadians(point2.Y - point.Y);
         point.X = ToRadians(point.X);
