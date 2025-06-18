@@ -1,7 +1,6 @@
 import { colors } from "@/constants/colors";
 import React, { useEffect, useState } from "react";
 import { Text, View, Image, StyleSheet, ScrollView, FlatList } from "react-native";
-import bikeRoutes from "@/mock_data/bike-routes";
 import CompactRouteBox from "@/components/CompactRouteBox";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useIsFocused } from "@react-navigation/native";
@@ -60,7 +59,7 @@ const Profile = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const options = { method: 'GET', url: `${API_URL}/bike-routes/favorites` };
+            const options = { method: 'GET', url: `${API_URL}/bike-routes/my-routes` };
             try {
                 const { data } = await axios.request(options);
                 setUserBikeRoutes(data);
