@@ -112,7 +112,7 @@ const NewRoute = () => {
     if (origin && destination) {
       Alert.alert("Rota definida", `Origem: ${origin}\nDestino: ${destination}`);
     } else {
-      Alert.alert("Atenção", "Defina origem e destino no mapa primeiro!");
+      Alert.alert("Atenção", "Defina origem e destino no mapa");
     }
   };
 
