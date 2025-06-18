@@ -1,30 +1,17 @@
 import { Link } from "expo-router";
 import { TimerSvg, DistanceSvg, StarSvg } from "@/constants/icons";
-import users from "@/mock_data/users";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { colors } from "@/constants/colors";
+import React from "react";
+import BikeRouteMainInfo from "@/interfaces/BikeRouteMainInfo";
 
-interface BikeRoute {
-    id: number,
-    userId: number
-    title: string,
-    image: string,
-    description: string,
-    duration: number, // minutes
-    distance: number, // km
-    rating: number, // 0 to 5
-    average_speed: number // km/h
-}
-
-const RouteBox = (bikeRoute: BikeRoute) => {
-    const user = users.filter(user => user.id == bikeRoute.userId)[0];
-
+const RouteBox = (bikeRoute: BikeRouteMainInfo) => {
     return (
         <Link style={styles.routeBoxContainer} href={`/bike-routes/${bikeRoute.id}`} asChild>
         <TouchableOpacity>
             <Image source={ {uri: bikeRoute.image} } style={styles.routeImage}/>
             <View style={styles.routeInfoContainer}>
-            <Image source={ {uri: user.photo} } style={styles.profileImage} />
+            <Image source={ {uri: bikeRoute.userMainInfo.photo} } style={styles.profileImage} />
             <View style={{}}>
                 <Text style={styles.routeTitle}>{bikeRoute.title}</Text>
                 <View style={styles.routeBoxInfoDetails} >
