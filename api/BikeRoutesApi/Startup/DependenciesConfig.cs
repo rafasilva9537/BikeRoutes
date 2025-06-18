@@ -17,7 +17,7 @@ public static class DependenciesConfig
 
     public static void AddCustomDbContext(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
         builder.Services.AddDbContext<BikeRoutesDbContext>(options => 
             options.UseNpgsql(
                 connectionString, 

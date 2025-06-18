@@ -6,7 +6,8 @@ public static class OpenApiConfig
 {
     public static void UseOpenApi(this WebApplication app)
     {
-        if (app.Environment.IsDevelopment())
+        // TODO: remove OpenApi from production environment
+        if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
         {
             app.MapOpenApi();
             app.MapScalarApiReference((options) =>
