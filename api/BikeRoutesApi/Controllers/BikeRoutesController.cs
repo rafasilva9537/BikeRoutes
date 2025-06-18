@@ -1,7 +1,7 @@
 ﻿using BikeRoutesApi.Data;
 using BikeRoutesApi.Dtos;
-using BikeRoutesApi.Entities;
 using BikeRoutesApi.Mappers;
+using BikeRoutesApi.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,16 +34,21 @@ public class BikeRoutesController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<BikeRouteDetailsDto>> CreateBikeRoute()
+    public async Task<ActionResult<BikeRouteDetailsDto>> CreateBikeRoute(CreateBikeRouteDto createBikeRouteDto)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(br => br.Id == 1);
-
-        var createdBikeRoute = new BikeRoute()
-        {
-            
-        };
+        var loggedUser = await _dbContext.Users.FirstOrDefaultAsync(br => br.Id == 1);
         
-        return Ok();
+        var createdBikeRoute = createBikeRouteDto.ToBikeRoute();
+        createdBikeRoute.User = loggedUser;
+        createdBikeRoute.Distance = GeographyUtils.CalculateHaversineDistance(createdBikeRoute.StartPath, createdBikeRoute.EndPath);
+        createdBikeRoute.AverageSpeed = createdBikeRoute.Distance / (createdBikeRoute.Duration/60);
+        
+        _dbContext.BikeRoutes.Add(createdBikeRoute);
+        await _dbContext.SaveChangesAsync();
+
+        var bikeRouteDetailsDto = createdBikeRoute.ToBikeRouteDetailsDto();
+        
+        return CreatedAtAction(nameof(GetBikeRouteById), new { routeId = createdBikeRoute.Id }, bikeRouteDetailsDto);
     }
     
     [HttpGet("{routeId:long}")]

@@ -3,6 +3,7 @@
 public record BikeRouteDetailsDto(
     long Id,
     string Title,
+    string Description,
     string Image,
     double? AverageSpeed,
     double Duration,
@@ -14,15 +15,12 @@ public record BikeRouteDetailsDto(
 );
 
 public record CreateBikeRouteDto(
-    long Id,
     string Title,
+    string Description,
     string Image,
-    double? AverageSpeed,
-    double Duration,
-    double Distance,
     PointDto StartPath,
     PointDto EndPath,
-    long UserId
+    double Duration
 );
 
 public record BikeRouteMainInfoDto(

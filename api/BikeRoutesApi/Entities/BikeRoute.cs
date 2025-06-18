@@ -14,12 +14,15 @@ public class BikeRoute
 
     public string Description { get; set; } = string.Empty;
 
+    // Duration in minutes
     public double Duration { get; set; }
 
+    // Distance in km
     public double Distance { get; set; }
 
     public double Rating { get; set; }
 
+    // Average speed in km/h
     public double? AverageSpeed { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; }
@@ -32,5 +35,5 @@ public class BikeRoute
 
     public LineString? PathRoutes { get; set; }
 
-    public User User { get; set; } = null!;
+    public User? User { get; set; }
 }
