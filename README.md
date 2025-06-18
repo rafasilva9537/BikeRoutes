@@ -5,6 +5,7 @@ Mobile app for users to share and customize bicycle routes.
 - Sharing of custom bicycle routes from users
 
 ## Setup (building ...)
+1. Copy `.env.example` file to `.env` file in api folder
 
 ## Technologies
 - ASP.NET Minimal API: C# .NET 9
