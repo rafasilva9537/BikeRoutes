@@ -16,7 +16,7 @@ const ProfileText = ({children}: any) => {
 
 const ProfileInfo = () => {
     return (
-        <SafeAreaView style={styles.profileInfoContainer}>
+        <View style={styles.profileInfoContainer}>
             <Image source={ {uri: user.photo} } style={styles.profilePhoto} />
             <View style={styles.profileInfo}>
                 <ProfileText>Nome: {user.firsName} {user.lastName}</ProfileText>
@@ -24,7 +24,7 @@ const ProfileInfo = () => {
                 <ProfileText>Celular: {user.phone}</ProfileText>
             </View>
             <Text style={styles.myRoutesHeader}>Minhas Rotas</Text>
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -32,6 +32,7 @@ const Profile = () => {
     const userBikeRoutes = bikeRoutes.filter(route => route.userId === 1);
 
     return (
+        <SafeAreaView edges={["top"]}>
         <FlatList
             ListHeaderComponent={ <ProfileInfo /> }
             data= {userBikeRoutes}
@@ -39,6 +40,7 @@ const Profile = () => {
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={styles.routeList}
         />
+        </SafeAreaView>
     );
 }
 

@@ -20,7 +20,7 @@ interface User {
 
 const Header = ({setState}: any) => {
   return  (
-    <SafeAreaView>
+    <SafeAreaView edges={["top"]}>
       <Text style={styles.headerTitle}>Rotas de Bicicleta</Text>
       <View style={styles.searchBar}>
         <SearchSvg style={styles.searchIcon}/>

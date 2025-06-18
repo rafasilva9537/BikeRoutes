@@ -7,9 +7,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const Header = () => {
     return  (
-      <SafeAreaView>
+      <View>
         <Text style={styles.headerTitle}>Favoritos</Text>
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -20,7 +20,7 @@ const Favorites = () => {
     favoritesRoutes.push(bikeRoutes[0]);
 
     return (
-        <View style={styles.homepageContainer}>
+        <SafeAreaView edges={["top"]} style={styles.homepageContainer}>
         <FlatList
             ListHeaderComponent={<Header />}
             ListHeaderComponentStyle={styles.header}
@@ -29,7 +29,7 @@ const Favorites = () => {
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={styles.routeList}
         />
-        </View>
+        </SafeAreaView>
     );
 }
 
