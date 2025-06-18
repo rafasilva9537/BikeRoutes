@@ -20,7 +20,7 @@ interface User {
 
 const Header = ({setState}: any) => {
   return  (
-    <View>
+    <SafeAreaView>
       <Text style={styles.headerTitle}>Rotas de Bicicleta</Text>
       <View style={styles.searchBar}>
         <SearchSvg style={styles.searchIcon}/>
@@ -30,7 +30,7 @@ const Header = ({setState}: any) => {
           onChangeText={(text) => setState(text)}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -55,7 +55,7 @@ const Index = () => {
   if(searchText === "")
   {
     return (
-      <SafeAreaView style={styles.homepageContainer}>
+      <View style={styles.homepageContainer}>
         <FlatList
           ListHeaderComponent={ <Header setState={setSearchText}/> }
           ListHeaderComponentStyle={ styles.header }
@@ -64,13 +64,13 @@ const Index = () => {
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.routeList}
         />
-      </SafeAreaView>
+      </View>
     );
   }
 
   const filteredRoutes = bikeRoutes.filter((route) => route.title.toLowerCase().includes(searchText.toLowerCase()));
   return (
-    <SafeAreaView style={styles.homepageContainer}>
+    <View style={styles.homepageContainer}>
       <FlatList
         ListHeaderComponent={ <Header setState={setSearchText}/> }
         ListHeaderComponentStyle={ styles.header }
@@ -79,7 +79,7 @@ const Index = () => {
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.routeList}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

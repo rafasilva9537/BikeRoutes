@@ -3,12 +3,13 @@ import bikeRoutes from "@/mock_data/bike-routes";
 import CompactRouteBox from "@/components/CompactRouteBox";
 import { colors } from "@/constants/colors";
 import React from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Header = () => {
     return  (
-      <View>
+      <SafeAreaView>
         <Text style={styles.headerTitle}>Favoritos</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 

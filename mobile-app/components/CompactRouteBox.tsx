@@ -3,6 +3,7 @@ import { TimerSvg, DistanceSvg, StarSvg } from "@/constants/icons";
 import users from "@/mock_data/users";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { colors } from "@/constants/colors";
+import React from "react";
 
 interface BikeRoute {
     id: number,

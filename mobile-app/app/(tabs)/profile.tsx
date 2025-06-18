@@ -4,6 +4,7 @@ import { Text, View, Image, StyleSheet, ScrollView, FlatList } from "react-nativ
 import users from "@/mock_data/users";
 import bikeRoutes from "@/mock_data/bike-routes";
 import CompactRouteBox from "@/components/CompactRouteBox";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const user = users[0];
 
@@ -15,7 +16,7 @@ const ProfileText = ({children}: any) => {
 
 const ProfileInfo = () => {
     return (
-        <View style={styles.profileInfoContainer}>
+        <SafeAreaView style={styles.profileInfoContainer}>
             <Image source={ {uri: user.photo} } style={styles.profilePhoto} />
             <View style={styles.profileInfo}>
                 <ProfileText>Nome: {user.firsName} {user.lastName}</ProfileText>
@@ -23,7 +24,7 @@ const ProfileInfo = () => {
                 <ProfileText>Celular: {user.phone}</ProfileText>
             </View>
             <Text style={styles.myRoutesHeader}>Minhas Rotas</Text>
-        </View>
+        </SafeAreaView>
     );
 }
 
