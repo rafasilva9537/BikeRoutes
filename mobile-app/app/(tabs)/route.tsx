@@ -1,30 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { 
-  Text, 
-  View, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
-  Dimensions,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-  ActivityIndicator
-} from "react-native";
-import MapView, { 
-  Marker, 
-  MapPressEvent, 
-  Region, 
-  Polyline, 
-  Circle 
-} from "react-native-maps";
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, Alert, ActivityIndicator } from "react-native";
+import MapView, { Marker, MapPressEvent, Region, Polyline, Circle } from "react-native-maps";
 import { requestForegroundPermissionsAsync, getCurrentPositionAsync, LocationObject, watchPositionAsync, Accuracy } from "expo-location";
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { colors } from "@/constants/colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 
 
-const GOOGLE_MAPS_API_KEY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&libraries=places&callback=initMap";
+const GOOGLE_MAPS_API_KEY = "AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao";
 
 const NewRoute = () => {
   const [location, setLocation] = useState<LocationObject | null>(null);
@@ -64,7 +48,7 @@ const NewRoute = () => {
   const updateLocation = (newLocation: LocationObject) => {
     setLocation(newLocation);
     setHeading(newLocation.coords.heading || null);
-    
+
     setMapRegion({
       latitude: newLocation.coords.latitude,
       longitude: newLocation.coords.longitude,
@@ -81,7 +65,7 @@ const NewRoute = () => {
       const response = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`
       );
-      
+
       if (response.data.results && response.data.results.length > 0) {
         return response.data.results[0].formatted_address;
       }
@@ -97,7 +81,7 @@ const NewRoute = () => {
   const handleMapPress = async (event: MapPressEvent) => {
     const { coordinate } = event.nativeEvent;
     const address = await reverseGeocode(coordinate.latitude, coordinate.longitude);
-    
+
     if (touchedPoints === 0) {
       setOrigin(address);
       setMarkers([{
@@ -141,42 +125,35 @@ const NewRoute = () => {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.searchBar}
       >
         <TextInput
           style={styles.input}
-          placeholder="Toque no mapa para definir origem"
+          placeholder="Origem"
           value={origin}
           onChangeText={setOrigin}
-          editable={false}
+          editable={true}
         />
         <TextInput
           style={styles.input}
-          placeholder="Toque no mapa para definir destino"
+          placeholder="Destino"
           value={destination}
           onChangeText={setDestination}
-          editable={false}
+          editable={true}
         />
         <View style={styles.buttonContainer}>
-          <TouchableOpacity 
-            style={[styles.button, styles.searchButton]} 
+          <TouchableOpacity
+            style={[styles.button, styles.searchButton]}
             onPress={handleSearch}
             disabled={loading}
           >
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text style={styles.buttonText}>Buscar Rota</Text>
+              <Text style={styles.buttonText}>Começar a pedalar</Text>
             )}
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.button, styles.clearButton]} 
-            onPress={clearRoute}
-            disabled={loading}
-          >
-            <Text style={styles.buttonText}>Limpar</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -201,7 +178,7 @@ const NewRoute = () => {
                 strokeColor="rgba(0, 150, 255, 0.5)"
                 fillColor="rgba(0, 150, 255, 0.2)"
               />
-              
+
               <Marker
                 coordinate={{
                   latitude: location.coords.latitude,
@@ -230,18 +207,19 @@ const NewRoute = () => {
             />
           )}
 
-          {markers.map((marker) => (
-            <Marker
-              key={marker.id}
-              coordinate={{
-                latitude: marker.latitude,
-                longitude: marker.longitude,
-              }}
-              title={marker.type === 'origin' ? 'Origem' : 'Destino'}
-              description={marker.address}
-              pinColor={marker.type === 'origin' ? colors.primary : '#e74c3c'}
-            />
-          ))}
+{markers.map((marker) => (
+  <Marker
+    key={marker.id}
+    coordinate={{
+      latitude: marker.latitude,
+      longitude: marker.longitude,
+    }}
+    title={marker.type === 'origin' ? 'Origem' : 'Destino'}
+    description={marker.address}
+    pinColor={marker.type === 'origin' ? colors.primary : '#e74c3c'}
+    onPress={clearRoute} // <- aqui está o segredo
+  />
+))}
         </MapView>
       )}
     </View>
