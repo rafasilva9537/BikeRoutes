@@ -3,6 +3,7 @@ using System;
 using BikeRoutesApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BikeRoutesApi.Migrations
 {
     [DbContext(typeof(BikeRoutesDbContext))]
-    partial class BikeRoutesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250618030726_AddBikeRouteFavorites")]
+    partial class AddBikeRouteFavorites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

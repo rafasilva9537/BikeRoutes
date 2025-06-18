@@ -36,4 +36,5 @@ public class BikeRoute
     public LineString? PathRoutes { get; set; }
 
     public User? User { get; set; }
+    public ICollection<FavoriteBikeRoute> FavoriteBikeRoutes { get; set; } = [];
 }

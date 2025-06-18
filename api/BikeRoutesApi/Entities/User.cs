@@ -14,5 +14,6 @@ public class User
 
     public string Photo { get; set; } = string.Empty;
 
-    public ICollection<BikeRoute> BikeRoutes { get; set; } = new List<BikeRoute>();
+    public ICollection<BikeRoute> BikeRoutes { get; set; } = [];
+    public ICollection<FavoriteBikeRoute> FavoriteBikeRoutes { get; set; } = [];
 }

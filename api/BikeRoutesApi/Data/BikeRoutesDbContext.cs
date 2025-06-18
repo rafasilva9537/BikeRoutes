@@ -16,6 +16,7 @@ public class BikeRoutesDbContext : DbContext
 
     public DbSet<BikeRoute> BikeRoutes { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<FavoriteBikeRoute> FavoriteBikeRoutes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -88,6 +89,20 @@ public class BikeRoutesDbContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("phone");
             entity.Property(e => e.Photo).HasColumnName("photo");
+        });
+
+        modelBuilder.Entity<FavoriteBikeRoute>(entity =>
+        {
+            entity.ToTable("favorite_bike_routes");
+            entity.HasKey(e => new { e.UserId, e.BikeRouteId });
+            
+            entity.HasOne(f => f.User)
+                .WithMany(u => u.FavoriteBikeRoutes)
+                .HasForeignKey(f => f.UserId);
+
+            entity.HasOne(f => f.BikeRoute)
+                .WithMany(r => r.FavoriteBikeRoutes)
+                .HasForeignKey(f => f.BikeRouteId);
         });
     }
 }

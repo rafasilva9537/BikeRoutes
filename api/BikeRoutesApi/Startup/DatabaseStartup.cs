@@ -288,9 +288,29 @@ public static class DatabaseStartup
             }
         ];
         
+        List<FavoriteBikeRoute> favoriteBikeRoutes = [
+            new() { UserId = 1, BikeRouteId = 1 },
+            new() { UserId = 1, BikeRouteId = 10 },
+            new() { UserId = 1, BikeRouteId = 3 },
+            new() { UserId = 2, BikeRouteId = 2 },
+            new() { UserId = 2, BikeRouteId = 4 },
+            new() { UserId = 3, BikeRouteId = 5 },
+            new() { UserId = 3, BikeRouteId = 6 },
+            new() { UserId = 4, BikeRouteId = 7 },
+            new() { UserId = 4, BikeRouteId = 8 },
+            new() { UserId = 5, BikeRouteId = 9 },
+            new() { UserId = 5, BikeRouteId = 1 },
+            new() { UserId = 6, BikeRouteId = 11 },
+            new() { UserId = 6, BikeRouteId = 12 },
+            new() { UserId = 1, BikeRouteId = 13 },
+            new() { UserId = 2, BikeRouteId = 14 }
+        ];
+        
         dbContext.Users.AddRange(users);
         dbContext.SaveChanges();
         dbContext.BikeRoutes.AddRange(bikeRoutes);
+        dbContext.SaveChanges();
+        dbContext.FavoriteBikeRoutes.AddRange(favoriteBikeRoutes);
         dbContext.SaveChanges();
         
         seedTransaction.Commit();
