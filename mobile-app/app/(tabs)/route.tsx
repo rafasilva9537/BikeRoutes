@@ -1,227 +1,209 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, Alert, ActivityIndicator } from "react-native";
-import MapView, { Marker, MapPressEvent, Region, Polyline, Circle } from "react-native-maps";
-import { requestForegroundPermissionsAsync, getCurrentPositionAsync, LocationObject, watchPositionAsync, Accuracy } from "expo-location";
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { colors } from "@/constants/colors";
-import { MaterialIcons } from "@expo/vector-icons";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+  ActivityIndicator,
+  Platform,
+  Image,
+} from "react-native";
+import MapView, { Marker, Polyline, Region, MapPressEvent } from "react-native-maps";
+import {
+  requestForegroundPermissionsAsync,
+  getCurrentPositionAsync,
+  LocationObject,
+  watchPositionAsync,
+  Accuracy,
+} from "expo-location";
 import axios from "axios";
-
-
-const GOOGLE_MAPS_API_KEY = "AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao";
+import { colors } from "@/constants/colors";
 
 const NewRoute = () => {
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [mapRegion, setMapRegion] = useState<Region | null>(null);
-  const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
-  const [markers, setMarkers] = useState<Array<{
-    id: string;
-    latitude: number;
-    longitude: number;
-    type: 'origin' | 'destination';
-    address?: string;
-  }>>([]);
-  const [heading, setHeading] = useState<number | null>(null);
+  const [markers, setMarkers] = useState<any[]>([]);
   const [touchedPoints, setTouchedPoints] = useState<number>(0);
   const [loading, setLoading] = useState(false);
 
-  async function requestLocationPermissions() {
-    const { granted } = await requestForegroundPermissionsAsync();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [duration, setDuration] = useState("");
 
-    if (granted) {
-      const currentPosition = await getCurrentPositionAsync({
-        accuracy: Accuracy.High
-      });
-      updateLocation(currentPosition);
+  const fixedImageUrl = "https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg";
 
-      await watchPositionAsync({
-        accuracy: Accuracy.High,
-        timeInterval: 5000,
-        distanceInterval: 10,
-      }, (newLocation) => {
-        updateLocation(newLocation);
-      });
+  useEffect(() => {
+    (async () => {
+      const { granted } = await requestForegroundPermissionsAsync();
+      if (granted) {
+        const pos = await getCurrentPositionAsync({});
+        setLocation(pos);
+        setMapRegion({
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        });
+
+        watchPositionAsync(
+          {
+            accuracy: Accuracy.High,
+            timeInterval: 5000,
+            distanceInterval: 10,
+          },
+          (newLocation) => {
+            setLocation(newLocation);
+          }
+        );
+      }
+    })();
+  }, []);
+
+  const handleMapPress = (event: MapPressEvent) => {
+    const { coordinate } = event.nativeEvent;
+
+    const newMarker = {
+      id: touchedPoints === 0 ? "origin" : "destination",
+      type: touchedPoints === 0 ? "origin" : "destination",
+      latitude: coordinate.latitude,
+      longitude: coordinate.longitude,
+    };
+
+    if (touchedPoints === 0) {
+      setMarkers([newMarker]);
+      setTouchedPoints(1);
+    } else {
+      setMarkers((prev) => [...prev, newMarker]);
+      setTouchedPoints(0);
     }
-  }
-
-  const updateLocation = (newLocation: LocationObject) => {
-    setLocation(newLocation);
-    setHeading(newLocation.coords.heading || null);
-
-    setMapRegion({
-      latitude: newLocation.coords.latitude,
-      longitude: newLocation.coords.longitude,
-      latitudeDelta: 0.005,
-      longitudeDelta: 0.005,
-    });
   };
 
-  useEffect(() => { requestLocationPermissions(); }, []);
+  const clearAll = () => {
+    setTitle("");
+    setDescription("");
+    setDuration("");
+    setMarkers([]);
+    setTouchedPoints(0);
+  };
 
-  const reverseGeocode = async (latitude: number, longitude: number) => {
+  const sendRoute = async () => {
+    if (markers.length < 2) {
+      Alert.alert("Erro", "Marque origem e destino no mapa.");
+      return;
+    }
+
+    if (!title || !description || !duration) {
+      Alert.alert("Erro", "Preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    const payload = {
+      title,
+      description,
+      image: fixedImageUrl,
+      startPath: {
+        x: markers[0].latitude,
+        y: markers[0].longitude,
+      },
+      endPath: {
+        x: markers[1].latitude,
+        y: markers[1].longitude,
+      },
+      duration: parseInt(duration),
+    };
+
     try {
       setLoading(true);
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`
-      );
-
-      if (response.data.results && response.data.results.length > 0) {
-        return response.data.results[0].formatted_address;
-      }
-      return `Lat: ${latitude.toFixed(4)}, Lon: ${longitude.toFixed(4)}`;
+      const response = await axios.post("http://localhost:8081/bike-routes", payload);
+      console.log("Rota enviada:", response.data);
+      Alert.alert("Sucesso", "Rota cadastrada com sucesso!");
+      clearAll();
     } catch (error) {
-      console.error("Erro no geocoding:", error);
-      return `Lat: ${latitude.toFixed(4)}, Lon: ${longitude.toFixed(4)}`;
+      console.error("Erro ao enviar:", error);
+      Alert.alert("Erro", "Falha ao enviar a rota.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleMapPress = async (event: MapPressEvent) => {
-    const { coordinate } = event.nativeEvent;
-    const address = await reverseGeocode(coordinate.latitude, coordinate.longitude);
-
-    if (touchedPoints === 0) {
-      setOrigin(address);
-      setMarkers([{
-        id: 'origin',
-        latitude: coordinate.latitude,
-        longitude: coordinate.longitude,
-        type: 'origin',
-        address: address
-      }]);
-      setTouchedPoints(1);
-    } else {
-      setDestination(address);
-      setMarkers(prev => [
-        ...prev,
-        {
-          id: 'destination',
-          latitude: coordinate.latitude,
-          longitude: coordinate.longitude,
-          type: 'destination',
-          address: address
-        }
-      ]);
-      setTouchedPoints(0);
-    }
-  };
-
-  const handleSearch = () => {
-    if (origin && destination) {
-      Alert.alert("Rota definida", `Origem: ${origin}\nDestino: ${destination}`);
-    } else {
-      Alert.alert("Atenção", "Defina origem e destino no mapa primeiro!");
-    }
-  };
-
-  const clearRoute = () => {
-    setOrigin("");
-    setDestination("");
-    setMarkers([]);
-    setTouchedPoints(0);
-  };
-
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.searchBar}
+      <ScrollView contentContainerStyle={styles.formContainer}>
+        <Text style={styles.label}>Título *</Text>
+        <TextInput
+          style={styles.input}
+          value={title}
+          onChangeText={setTitle}
+          placeholder="Ex: Rota do Lago"
+        />
+
+        <Text style={styles.label}>Descrição *</Text>
+        <TextInput
+          style={[styles.input, { height: 80 }]}
+          value={description}
+          onChangeText={setDescription}
+          placeholder="Descreva sua rota"
+          multiline
+        />
+
+        <Text style={styles.label}>Duração estimada (min) *</Text>
+        <TextInput
+          style={styles.input}
+          value={duration}
+          onChangeText={setDuration}
+          placeholder="Ex: 45"
+          keyboardType="numeric"
+        />
+
+        <Text style={styles.label}>Imagem fixa</Text>
+        <Image
+          source={{ uri: fixedImageUrl }}
+          style={styles.previewImage}
+          resizeMode="cover"
+        />
+
+        <Text style={styles.label}>Toque no mapa para escolher origem e destino</Text>
+      </ScrollView>
+
+      <MapView
+        style={styles.map}
+        region={mapRegion}
+        onPress={handleMapPress}
+        showsUserLocation={true}
       >
-        <TextInput
-          style={styles.input}
-          placeholder="Origem"
-          value={origin}
-          onChangeText={setOrigin}
-          editable={true}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Destino"
-          value={destination}
-          onChangeText={setDestination}
-          editable={true}
-        />
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.button, styles.searchButton]}
-            onPress={handleSearch}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text style={styles.buttonText}>Começar a pedalar</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
+        {markers.map((m) => (
+          <Marker
+            key={m.id}
+            coordinate={{ latitude: m.latitude, longitude: m.longitude }}
+            title={m.type === "origin" ? "Origem" : "Destino"}
+            pinColor={m.type === "origin" ? colors.primary : "#e74c3c"}
+          />
+        ))}
 
+        {markers.length === 2 && (
+          <Polyline
+            coordinates={markers.map((m) => ({
+              latitude: m.latitude,
+              longitude: m.longitude,
+            }))}
+            strokeColor={colors.primary}
+            strokeWidth={4}
+          />
+        )}
+      </MapView>
 
-      {mapRegion && (
-        <MapView
-          style={styles.map}
-          region={mapRegion}
-          showsUserLocation={false}
-          showsMyLocationButton={true}
-          onPress={handleMapPress}
-        >
-          {location && (
-            <>
-              <Circle
-                center={{
-                  latitude: location.coords.latitude,
-                  longitude: location.coords.longitude,
-                }}
-                radius={location.coords.accuracy || 20}
-                strokeColor="rgba(0, 150, 255, 0.5)"
-                fillColor="rgba(0, 150, 255, 0.2)"
-              />
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.sendButton} onPress={sendRoute} disabled={loading}>
+          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Começar a pedalar</Text>}
+        </TouchableOpacity>
 
-              <Marker
-                coordinate={{
-                  latitude: location.coords.latitude,
-                  longitude: location.coords.longitude,
-                }}
-                anchor={{ x: 0.5, y: 0.5 }}
-                flat={true}
-                rotation={heading || 0}
-              >
-                <View style={styles.userLocationMarker}>
-                  <MaterialIcons name="navigation" size={24} color="white" />
-                  <View style={styles.arrow} />
-                </View>
-              </Marker>
-            </>
-          )}
-
-          {markers.length > 1 && (
-            <Polyline
-              coordinates={markers.map((m) => ({
-                latitude: m.latitude,
-                longitude: m.longitude,
-              }))}
-              strokeColor="#3498db"
-              strokeWidth={4}
-            />
-          )}
-
-{markers.map((marker) => (
-  <Marker
-    key={marker.id}
-    coordinate={{
-      latitude: marker.latitude,
-      longitude: marker.longitude,
-    }}
-    title={marker.type === 'origin' ? 'Origem' : 'Destino'}
-    description={marker.address}
-    pinColor={marker.type === 'origin' ? colors.primary : '#e74c3c'}
-    onPress={clearRoute} // <- aqui está o segredo
-  />
-))}
-        </MapView>
-      )}
+        <TouchableOpacity style={styles.clearButton} onPress={clearAll}>
+          <Text style={styles.buttonText}>Limpar</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -229,71 +211,57 @@ const NewRoute = () => {
 export default NewRoute;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 40,
-    backgroundColor: colors.background,
-  },
-  searchBar: {
+  container: { flex: 1 },
+  formContainer: {
     padding: 15,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    backgroundColor: "#f9f9f9",
+  },
+  label: {
+    fontWeight: "bold",
+    marginBottom: 4,
+    marginTop: 10,
   },
   input: {
-    height: 40,
-    borderColor: colors.primary,
     borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    backgroundColor: '#f5f5f5',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  button: {
-    flex: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
     padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginHorizontal: 5,
+    backgroundColor: "#fff",
   },
-  searchButton: {
-    backgroundColor: colors.primary,
-  },
-  clearButton: {
-    backgroundColor: '#e74c3c',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  previewImage: {
+    width: "100%",
+    height: 180,
+    borderRadius: 10,
+    marginTop: 10,
   },
   map: {
-    flex: 1,
+    height: 300,
+    marginVertical: 10,
   },
-  userLocationMarker: {
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingHorizontal: 15,
+    paddingBottom: 15,
+  },
+  sendButton: {
     backgroundColor: colors.primary,
-    padding: 5,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 12,
+    borderRadius: 8,
+    flex: 1,
+    marginRight: 10,
+    alignItems: "center",
   },
-  arrow: {
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 5,
-    borderRightWidth: 5,
-    borderBottomWidth: 1,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: colors.primary,
-    transform: [{ rotate: '180deg' }],
-    marginTop: 0,
+  clearButton: {
+    backgroundColor: "#e74c3c",
+    padding: 12,
+    borderRadius: 8,
+    flex: 1,
+    marginLeft: 10,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
