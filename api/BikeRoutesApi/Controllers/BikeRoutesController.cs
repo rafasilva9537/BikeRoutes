@@ -65,4 +65,20 @@ public class BikeRoutesController : ControllerBase
         
         return Ok(bikeRouteDto);
     }
+    
+    [HttpGet("favorites")]
+    public async Task<ActionResult<List<BikeRouteMainInfoDto>>> GetFavoriteBikeRoutes()
+    {
+        var loggedUser = await _dbContext.Users.FirstOrDefaultAsync(br => br.Id == 1);
+        if(loggedUser is null) return NotFound();
+        
+        var favoriteBikeRoutes = await _dbContext.FavoriteBikeRoutes
+            .Where(br => br.UserId == loggedUser.Id)
+            .Include(br => br.BikeRoute)
+            .ThenInclude(br => br.User)
+            .Select(br => br.BikeRoute.ToBikeRouteMainInfoDto())
+            .ToListAsync();
+        
+        return Ok(favoriteBikeRoutes);
+    }
 }
