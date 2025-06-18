@@ -30,6 +30,8 @@ import {
 import { colors } from "@/constants/colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
+import { CreateBikeRoute } from "@/interfaces/CreateBikeRoute";
+import { API_URL } from "@/constants/api";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao";
 
@@ -52,11 +54,13 @@ const NewRoute = () => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [routeData, setRouteData] = useState({
+  const [routeData, setRouteData] = useState<CreateBikeRoute>({
     title: "",
-    duration: "",
-    distance: "",
-    rating: "",
+    description: "",
+    image: "https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg",
+    duration: 0,
+    startPath: { x: 0, y: 0 },
+    endPath: { x: 0, y: 0 },
   });
 
   useEffect(() => {
@@ -146,12 +150,44 @@ const NewRoute = () => {
     }
   };
 
-  const handleSearch = () => {
-    if (origin && destination && routeData.title) {
-      Alert.alert(
-        "Rota definida",
-        `Origem: ${origin}\nDestino: ${destination}\nTítulo: ${routeData.title}`
-      );
+  const postRoute = async () => {
+      if (origin && destination && routeData.title && markers.length >= 2) {
+        // Get coordinates from markers
+        const startMarker = markers.find(m => m.type === "origin");
+        const endMarker = markers.find(m => m.type === "destination");
+
+        if (!startMarker || !endMarker) {
+          Alert.alert("Atenção", "Selecione origem e destino no mapa");
+          return;
+        }
+
+        // Update routeData with coordinates
+        const updatedRouteData = {
+          ...routeData,
+          startPath: { x: startMarker.latitude, y: startMarker.longitude },
+          endPath: { x: endMarker.latitude, y: endMarker.longitude },
+        };
+
+      const options = {
+        method: 'POST',
+        url: `${API_URL}/bike-routes`,
+        headers: {'Content-Type': 'application/json'},
+        data: {
+          title: updatedRouteData.title,
+          description: updatedRouteData.description,
+          image: updatedRouteData.image,
+          startPath: updatedRouteData.startPath,
+          endPath: updatedRouteData.endPath,
+          duration: updatedRouteData.duration
+        }
+      };
+
+      try {
+        const { data } = await axios.request(options);
+        console.log("Route was posted: ", data);
+      } catch (error) {
+        console.error(error);
+      }
     } else {
       Alert.alert("Atenção", "Preencha todos os campos e selecione origem/destino");
     }
@@ -253,27 +289,27 @@ const NewRoute = () => {
                 }
               />
 
+              <Text style={styles.label}>Descrição</Text>
+              <TextInput
+                style={styles.input}
+                value={routeData.description}
+                onChangeText={(text) =>
+                  setRouteData({ ...routeData, description: text })
+                }
+              />
+
               <Text style={styles.label}>Duração (min)</Text>
               <TextInput
                 style={styles.input}
                 keyboardType="numeric"
-                value={routeData.duration}
+                value={routeData.duration.toString()}
                 onChangeText={(text) =>
-                  setRouteData({ ...routeData, duration: text })
+                  setRouteData({ ...routeData, duration: parseInt(text) })
                 }
               />
 
-              <Text style={styles.label}>Distância (km)</Text>
-              <TextInput
-                style={styles.input}
-                keyboardType="numeric"
-                value={routeData.distance}
-                onChangeText={(text) =>
-                  setRouteData({ ...routeData, distance: text })
-                }
-              />
 
-              <Text style={styles.label}>Nota (1-5)</Text>
+              {/* <Text style={styles.label}>Nota (1-5)</Text>
               <TextInput
                 style={styles.input}
                 keyboardType="numeric"
@@ -281,13 +317,13 @@ const NewRoute = () => {
                 onChangeText={(text) =>
                   setRouteData({ ...routeData, rating: text })
                 }
-              />
+              /> */}
 
               <TouchableOpacity
                 style={[styles.button, styles.searchButton]}
                 onPress={() => {
                   setModalVisible(false);
-                  handleSearch();
+                  postRoute();
                 }}
               >
                 {loading ? (
