@@ -17,7 +17,7 @@ const RouteBox = (bikeRoute: BikeRouteMainInfo) => {
                 <View style={styles.routeBoxInfoDetails} >
                 <View style={styles.routeIconInfoContainer}>
                     <DistanceSvg/>
-                    <Text>{bikeRoute.distance} km</Text>
+                    <Text>{bikeRoute.distance.toPrecision(2)} km</Text>
                 </View>
 
                 <View style={styles.routeIconInfoContainer}>

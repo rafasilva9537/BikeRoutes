@@ -50,7 +50,7 @@ const BikeRouteDetails = () => {
       <View style={styles.infoContainer}>
         <View style={styles.infoBox}>
           <DistanceSvg />
-          <Text>{bikeRoute.distance} km</Text>
+          <Text>{bikeRoute.distance?.toPrecision(2)} km</Text>
         </View>
 
         <View style={styles.infoBox}>
@@ -63,11 +63,11 @@ const BikeRouteDetails = () => {
 
         <View style={styles.infoBox}>
           <StarSvg fill={"yellow"} />
-          <Text>{bikeRoute.rating}</Text>
+          <Text>{bikeRoute.rating?.toPrecision(2)}</Text>
         </View>
       </View>
 
-      <Text style={styles.speed}>Velocidade média: {bikeRoute.averageSpeed} km/h</Text>
+      <Text style={styles.speed}>Velocidade média: {bikeRoute.averageSpeed?.toPrecision(2)} km/h</Text>
 
       <View style={styles.user}>
         <Image source={{uri: bikeRoute.userMainInfo.photo }} style={styles.userPhoto}/>
