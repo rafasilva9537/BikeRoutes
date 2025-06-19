@@ -1,22 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Text, View, StyleSheet, TextInput } from "react-native";
-import bikeRoutes from "@/mock_data/bike-routes";
 import { colors } from "@/constants/colors";
 import RouteBox from "@/components/RouteBox";
 import { SearchSvg } from "@/constants/icons";
-
-interface User {
-  id: number,
-  firsName: string,
-  lastName: string,
-  email: string,
-  phone: string,
-  photo: string,
-}
+import axios from 'axios';
+import { API_URL } from "@/constants/api";
+import BikeRouteMainInfo from "@/interfaces/BikeRouteMainInfo";
+import { useIsFocused } from '@react-navigation/native';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Header = ({setState}: any) => {
   return  (
-    <View>
+    <SafeAreaView edges={["top"]}>
       <Text style={styles.headerTitle}>Rotas de Bicicleta</Text>
       <View style={styles.searchBar}>
         <SearchSvg style={styles.searchIcon}/>
@@ -26,12 +21,27 @@ const Header = ({setState}: any) => {
           onChangeText={(text) => setState(text)}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const Index = () => {
   const [searchText, setSearchText] = useState("");
+  const [bikeRoutes, setBikeRoutes] = useState<BikeRouteMainInfo[]>([]);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const options = { method: 'GET', url: `${API_URL}/bike-routes` };
+      try {
+        const { data } = await axios.request(options);
+        setBikeRoutes(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [isFocused]);
 
   if(searchText === "")
   {

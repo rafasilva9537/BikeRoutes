@@ -1,20 +1,35 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import bikeRoutes from "@/mock_data/bike-routes";
-import users from "@/mock_data/users";
 import { TimerSvg, DistanceSvg, StarSvg } from "@/constants/icons";
 import { colors } from "@/constants/colors";
+import { useIsFocused } from "@react-navigation/native";
+import BikeRouteDetailsInterface from "@/interfaces/BikeRouteDetails";
+import { API_URL } from "@/constants/api";
+import axios from "axios";
 
 const BikeRouteDetails = () => {
   const { id } = useLocalSearchParams();
   const routeId = Number(id);
   const router = useRouter();
 
-  const route = bikeRoutes.find((route) => route.id === routeId);
-  const user = users.find((user) => user.id === route?.userId);
+  const [bikeRoute, setBikeRoute] = useState<BikeRouteDetailsInterface>();
+  const isFocused = useIsFocused();
 
-  if (!route) {
+  useEffect(() => {
+    const fetchData = async () => {
+      const options = { method: 'GET', url: `${API_URL}/bike-routes/${routeId}` };
+      try {
+        const { data } = await axios.request(options);
+        setBikeRoute(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [isFocused]);
+
+  if (!bikeRoute) {
     return (
       <View>
         <Text>Rota não encontrada.</Text>
@@ -28,35 +43,35 @@ const BikeRouteDetails = () => {
       style={styles.scrollContainer}
       contentContainerStyle={styles.scrollContent}
     >
-      <Image source={{ uri: route.image }} style={styles.image} />
-      <Text style={styles.title}>{route.title}</Text>
-      <Text style={styles.description}>{route.description}</Text>
+      <Image source={{ uri: bikeRoute.image }} style={styles.image} />
+      <Text style={styles.title}>{bikeRoute.title}</Text>
+      <Text style={styles.description}>{bikeRoute.description}</Text>
 
       <View style={styles.infoContainer}>
         <View style={styles.infoBox}>
           <DistanceSvg />
-          <Text>{route.distance} km</Text>
+          <Text>{bikeRoute.distance?.toPrecision(2)} km</Text>
         </View>
 
         <View style={styles.infoBox}>
           <TimerSvg />
           <Text>
-            {Math.floor(route.duration / 60)}:
-            {(route.duration % 60).toString().padStart(2, "0")} hrs
+            {Math.floor(bikeRoute.duration / 60)}:
+            {(bikeRoute.duration % 60).toString().padStart(2, "0")} hrs
           </Text>
         </View>
 
         <View style={styles.infoBox}>
           <StarSvg fill={"yellow"} />
-          <Text>{route.rating}</Text>
+          <Text>{bikeRoute.rating?.toPrecision(2)}</Text>
         </View>
       </View>
 
-      <Text style={styles.speed}>Velocidade média: {route.average_speed} km/h</Text>
+      <Text style={styles.speed}>Velocidade média: {bikeRoute.averageSpeed?.toPrecision(2)} km/h</Text>
 
       <View style={styles.user}>
-        <Image source={{uri: user?.photo}} style={styles.userPhoto}/>
-        <Text style={styles.username}>{user?.firsName} {user?.lastName}</Text>
+        <Image source={{uri: bikeRoute.userMainInfo.photo }} style={styles.userPhoto}/>
+        <Text style={styles.username}>{bikeRoute.userMainInfo.firstName} {bikeRoute.userMainInfo.lastName}</Text>
       </View>
 
       <Image source={require("@/assets/images/maps_route.png")} style={styles.image} />

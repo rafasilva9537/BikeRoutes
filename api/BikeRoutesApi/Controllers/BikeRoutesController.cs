@@ -83,15 +83,14 @@ public class BikeRoutesController : ControllerBase
     }
 
     [HttpGet("my-routes")]
-    public async Task<ActionResult<MyBikeRouteDto>> GetMyBikeRoutes()
+    public async Task<ActionResult<BikeRouteMainInfoDto>> GetMyBikeRoutes()
     {
         var loggedUser = await _dbContext.Users.FirstOrDefaultAsync(br => br.Id == 1);
         if(loggedUser is null) return NotFound();
-        
+
         var myBikeRoutes = await _dbContext.BikeRoutes
             .Where(br => br.UserId == loggedUser.Id)
-            .Include(br => br.User)
-            .Select(br => br.ToMyBikeRouteDto())
+            .Select(br => br.ToBikeRouteMainInfoDto())
             .ToListAsync();
         
         return Ok(myBikeRoutes);

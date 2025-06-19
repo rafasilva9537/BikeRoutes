@@ -1,11 +1,13 @@
 import { colors } from "@/constants/colors";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, Image, StyleSheet, ScrollView, FlatList } from "react-native";
-import users from "@/mock_data/users";
-import bikeRoutes from "@/mock_data/bike-routes";
 import CompactRouteBox from "@/components/CompactRouteBox";
-
-const user = users[0];
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useIsFocused } from "@react-navigation/native";
+import BikeRouteMainInfo from "@/interfaces/BikeRouteMainInfo";
+import { API_URL } from "@/constants/api";
+import axios from "axios";
+import User from "@/interfaces/User";
 
 const ProfileText = ({children}: any) => {
     return (
@@ -14,11 +16,35 @@ const ProfileText = ({children}: any) => {
 }
 
 const ProfileInfo = () => {
+    const [user, setUser] = useState<User>();
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const options = { method: 'GET', url: `${API_URL}/accounts/1` };
+            try {
+                const { data } = await axios.request(options);
+                setUser(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, [isFocused]);
+
+    if (!user) {
+        return (
+            <View style={styles.profileInfoContainer}>
+                <Text>Carregando...</Text>
+            </View>
+        );
+    }
+
     return (
         <View style={styles.profileInfoContainer}>
             <Image source={ {uri: user.photo} } style={styles.profilePhoto} />
             <View style={styles.profileInfo}>
-                <ProfileText>Nome: {user.firsName} {user.lastName}</ProfileText>
+                <ProfileText>Nome: {user.firstName} {user.lastName}</ProfileText>
                 <ProfileText>Email: {user.email}</ProfileText>
                 <ProfileText>Celular: {user.phone}</ProfileText>
             </View>
@@ -28,9 +54,24 @@ const ProfileInfo = () => {
 }
 
 const Profile = () => {
-    const userBikeRoutes = bikeRoutes.filter(route => route.userId === 1);
+    const [userBikeRoutes, setUserBikeRoutes] = useState<BikeRouteMainInfo[]>([]);
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const options = { method: 'GET', url: `${API_URL}/bike-routes/my-routes` };
+            try {
+                const { data } = await axios.request(options);
+                setUserBikeRoutes(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, [isFocused]);
 
     return (
+        <SafeAreaView edges={["top"]}>
         <FlatList
             ListHeaderComponent={ <ProfileInfo /> }
             data= {userBikeRoutes}
@@ -38,6 +79,7 @@ const Profile = () => {
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={styles.routeList}
         />
+        </SafeAreaView>
     );
 }
 

@@ -1,24 +1,11 @@
 import { Link } from "expo-router";
 import { TimerSvg, DistanceSvg, StarSvg } from "@/constants/icons";
-import users from "@/mock_data/users";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { colors } from "@/constants/colors";
+import React from "react";
+import BikeRouteMainInfo from "@/interfaces/BikeRouteMainInfo";
 
-interface BikeRoute {
-    id: number,
-    userId: number
-    title: string,
-    image: string,
-    description: string,
-    duration: number, // minutes
-    distance: number, // km
-    rating: number, // 0 to 5
-    average_speed: number // km/h
-}
-
-const CompactRouteBox = (bikeRoute: BikeRoute) => {
-    const user = users.filter(user => user.id == bikeRoute.userId)[0];
-
+const CompactRouteBox = (bikeRoute: BikeRouteMainInfo) => {
     return (
         <Link style={styles.routeBoxContainer} href={`/bike-routes/${bikeRoute.id}`} asChild>
         <TouchableOpacity>
@@ -26,11 +13,11 @@ const CompactRouteBox = (bikeRoute: BikeRoute) => {
             <View style={styles.routeInfoContainer}>
                 <View style={ styles.completeInfoContainer }>
                     <Text style={styles.routeTitle}>{bikeRoute.title}</Text>
-                    <Text style={{ textDecorationLine: "underline" }}>{user.firsName} {user.lastName}</Text>
+                    <Text style={{ textDecorationLine: "underline" }}>{bikeRoute.userMainInfo.firstName} {bikeRoute.userMainInfo.lastName}</Text>
                     <View style={styles.routeBoxInfoDetails} >
                         <View style={styles.routeIconInfoContainer}>
                             <DistanceSvg/>
-                            <Text>{bikeRoute.distance} km</Text>
+                            <Text>{bikeRoute.distance.toPrecision(2)} km</Text>
                         </View>
 
                         <View style={styles.routeIconInfoContainer}>
