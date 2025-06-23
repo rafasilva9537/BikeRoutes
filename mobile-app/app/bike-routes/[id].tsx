@@ -27,7 +27,7 @@ const BikeRouteDetails = () => {
       }
     };
     fetchData();
-  }, [isFocused]);
+  }, [isFocused, routeId]);
 
   if (!bikeRoute) {
     return (
