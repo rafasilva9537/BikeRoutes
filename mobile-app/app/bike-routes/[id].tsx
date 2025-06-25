@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import {Link, useLocalSearchParams, useRouter} from "expo-router";
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { TimerSvg, DistanceSvg, StarSvg } from "@/constants/icons";
@@ -27,7 +27,7 @@ const BikeRouteDetails = () => {
       }
     };
     fetchData();
-  }, [isFocused]);
+  }, [isFocused, routeId]);
 
   if (!bikeRoute) {
     return (
@@ -44,6 +44,7 @@ const BikeRouteDetails = () => {
       contentContainerStyle={styles.scrollContent}
     >
       <Image source={{ uri: bikeRoute.image }} style={styles.image} />
+
       <Text style={styles.title}>{bikeRoute.title}</Text>
       <Text style={styles.description}>{bikeRoute.description}</Text>
 
@@ -74,7 +75,11 @@ const BikeRouteDetails = () => {
         <Text style={styles.username}>{bikeRoute.userMainInfo.firstName} {bikeRoute.userMainInfo.lastName}</Text>
       </View>
 
-      <Image source={require("@/assets/images/maps_route.png")} style={styles.image} />
+      <Link href={`/bike-routes/${bikeRoute.id}/map-route`} style={styles.image} asChild>
+        <TouchableOpacity>
+          <Image source={require("@/assets/images/maps_route.png")} style={styles.image}/>
+        </TouchableOpacity>
+      </ Link>
       
       <View style={styles.ratingContainer}>
         <StarSvg fill={"yellow"}></StarSvg>

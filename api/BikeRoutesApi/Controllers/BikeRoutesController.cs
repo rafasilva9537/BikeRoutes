@@ -26,6 +26,7 @@ public class BikeRoutesController : ControllerBase
     {
         var bikeRoutesDtos = await _dbContext
             .BikeRoutes
+            .OrderByDescending(br => br.CreatedAt)
             .Include(br => br.User)
             .Select(br => br.ToBikeRouteMainInfoDto())
             .ToListAsync();
@@ -40,8 +41,8 @@ public class BikeRoutesController : ControllerBase
         
         var createdBikeRoute = createBikeRouteDto.ToBikeRoute();
         createdBikeRoute.User = loggedUser;
-        createdBikeRoute.Distance = GeographyUtils.CalculateHaversineDistance(createdBikeRoute.StartPath, createdBikeRoute.EndPath);
         createdBikeRoute.AverageSpeed = createdBikeRoute.Distance / (createdBikeRoute.Duration/60);
+        createdBikeRoute.CreatedAt = DateTimeOffset.UtcNow;
         
         _dbContext.BikeRoutes.Add(createdBikeRoute);
         await _dbContext.SaveChangesAsync();

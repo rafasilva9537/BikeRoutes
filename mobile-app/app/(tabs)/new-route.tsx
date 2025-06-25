@@ -5,9 +5,6 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Dimensions,
-  KeyboardAvoidingView,
-  Platform,
   Alert,
   ActivityIndicator,
   ScrollView,
@@ -18,7 +15,7 @@ import MapView, {
   MapPressEvent,
   Region,
   Polyline,
-  Circle,
+  Circle
 } from "react-native-maps";
 import {
   requestForegroundPermissionsAsync,
@@ -32,27 +29,69 @@ import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { CreateBikeRoute } from "@/interfaces/CreateBikeRoute";
 import { API_URL } from "@/constants/api";
+import {useLocalSearchParams} from "expo-router";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao";
+// TODO: remove when implement map service on backend
+const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
 
 type MarkerType = {
   id: string;
   latitude: number;
   longitude: number;
   type: "origin" | "destination";
-  address: string;
 };
 
+type OpenRouteServiceCoordinates = [longitude: number, latitude: number];
+
+type RouteDirectionCoordinates = {
+  latitude: number;
+  longitude: number;
+}
+
+type RouteDirection = {
+  distance: number;
+  directions: RouteDirectionCoordinates[];
+}
+
+const fetchRouteDirections = async (origin: MarkerType, destination: MarkerType): Promise<RouteDirection> => {
+  try {
+    const URL = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${API_KEY}&start=${origin.longitude},${origin.latitude}&end=${destination.longitude},${destination.latitude}`;
+
+    const response = await axios.get(URL);
+    const coordinates: OpenRouteServiceCoordinates[] = response.data.features[0]?.geometry?.coordinates; // BE CAREFULL: Route directions as [longitude, latitude]
+    const distanceInKm: number = response.data.features[0]?.properties?.summary?.distance / 1_000;
+
+    if(coordinates){
+      console.log("Route directions fetched.");
+
+      const routeDirection = {
+        distance: distanceInKm,
+        directions: coordinates.map(c => ({ latitude: c[1], longitude: c[0] }))
+      }
+      return routeDirection;
+
+    } else {
+      console.warn("Unable to fetch route directions.");
+      return { distance: 0, directions: [] };
+    }
+  } catch (error) {
+    console.error("Unable to fetch route directions: ", error);
+    return { distance: 0, directions: [] };
+  }
+}
+
 const NewRoute = () => {
+  const { id } = useLocalSearchParams();
+  const routeId = Number(id);
+
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [mapRegion, setMapRegion] = useState<Region | null>(null);
-  const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
   const [markers, setMarkers] = useState<MarkerType[]>([]);
   const [heading, setHeading] = useState<number | null>(null);
-  const [touchedPoints, setTouchedPoints] = useState(0);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  // const [routeDirections, setRouteDirections] = useState<RouteDirectionCoordinates[]>([]);
+  const [routeDirection, setRouteDirection] = useState<RouteDirection>({ distance: 0, directions: [] });
 
   const [routeData, setRouteData] = useState<CreateBikeRoute>({
     title: "",
@@ -61,6 +100,7 @@ const NewRoute = () => {
     duration: 0,
     startPath: { x: 0, y: 0 },
     endPath: { x: 0, y: 0 },
+    distance: 0
   });
 
   useEffect(() => {
@@ -100,42 +140,34 @@ const NewRoute = () => {
     });
   };
 
-  const reverseGeocode = async (latitude: number, longitude: number) => {
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`
-      );
-      if (response.data.results && response.data.results.length > 0) {
-        return response.data.results[0].formatted_address;
+  useEffect(() => {
+    const updateRouteDirections = async () => {
+      if(markers.length >= 2) {
+        console.log("Fetching route directions...");
+        const routeDirection: RouteDirection = await fetchRouteDirections(markers[0], markers[1]);
+
+        setRouteDirection((prevRoute) => ({
+          ...prevRoute,
+          ...routeDirection
+        }));
       }
-      return `Lat: ${latitude.toFixed(4)}, Lon: ${longitude.toFixed(4)}`;
-    } catch (error) {
-      console.error("Erro no geocoding:", error);
-      return `Lat: ${latitude.toFixed(4)}, Lon: ${longitude.toFixed(4)}`;
-    } finally {
-      setLoading(false);
     }
-  };
+    updateRouteDirections();
+  }, [markers]);
 
   const handleMapPress = async (event: MapPressEvent) => {
     const { coordinate } = event.nativeEvent;
-    const address = await reverseGeocode(coordinate.latitude, coordinate.longitude);
 
-    if (touchedPoints === 0) {
-      setOrigin(address);
+    if (markers.length === 0 || markers.length === 2) {
       setMarkers([
         {
           id: "origin",
           latitude: coordinate.latitude,
           longitude: coordinate.longitude,
           type: "origin",
-          address: address,
         },
       ]);
-      setTouchedPoints(1);
-    } else {
-      setDestination(address);
+    } else if (markers.length === 1) {
       setMarkers((prev) => [
         ...prev,
         {
@@ -143,15 +175,13 @@ const NewRoute = () => {
           latitude: coordinate.latitude,
           longitude: coordinate.longitude,
           type: "destination",
-          address: address,
         },
       ]);
-      setTouchedPoints(0);
     }
   };
 
   const postRoute = async () => {
-      if (origin && destination && routeData.title && markers.length >= 2) {
+      if (routeData.title && markers.length >= 2) {
         // Get coordinates from markers
         const startMarker = markers.find(m => m.type === "origin");
         const endMarker = markers.find(m => m.type === "destination");
@@ -178,7 +208,8 @@ const NewRoute = () => {
           image: updatedRouteData.image,
           startPath: updatedRouteData.startPath,
           endPath: updatedRouteData.endPath,
-          duration: updatedRouteData.duration
+          duration: updatedRouteData.duration,
+          distance: routeDirection.distance,
         }
       };
 
@@ -194,10 +225,7 @@ const NewRoute = () => {
   };
 
   const clearRoute = () => {
-    setOrigin("");
-    setDestination("");
     setMarkers([]);
-    setTouchedPoints(0);
   };
 
   return (
@@ -238,10 +266,7 @@ const NewRoute = () => {
             )}
             {markers.length > 1 && (
               <Polyline
-                coordinates={markers.map((m) => ({
-                  latitude: m.latitude,
-                  longitude: m.longitude,
-                }))}
+                coordinates={routeDirection.directions}
                 strokeColor="#3498db"
                 strokeWidth={4}
               />
@@ -254,7 +279,7 @@ const NewRoute = () => {
                   longitude: marker.longitude,
                 }}
                 title={marker.type === "origin" ? "Origem" : "Destino"}
-                description={marker.address}
+                description={marker.type}
                 pinColor={marker.type === "origin" ? colors.primary : "#e74c3c"}
                 onPress={clearRoute}
               />
@@ -302,22 +327,11 @@ const NewRoute = () => {
               <TextInput
                 style={styles.input}
                 keyboardType="numeric"
-                value={routeData.duration.toString()}
+                value={routeData.duration?.toString()}
                 onChangeText={(text) =>
-                  setRouteData({ ...routeData, duration: parseInt(text) })
+                  setRouteData({ ...routeData, duration: text ? parseInt(text) : 0 })
                 }
               />
-
-
-              {/* <Text style={styles.label}>Nota (1-5)</Text>
-              <TextInput
-                style={styles.input}
-                keyboardType="numeric"
-                value={routeData.rating}
-                onChangeText={(text) =>
-                  setRouteData({ ...routeData, rating: text })
-                }
-              /> */}
 
               <TouchableOpacity
                 style={[styles.button, styles.searchButton]}

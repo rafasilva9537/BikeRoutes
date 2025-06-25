@@ -42,7 +42,7 @@ const Layout = () => {
                 }}
             />
             <Tabs.Screen 
-                name="route"
+                name="new-route"
                 options={{
                     title: "Nova Rota",
                     headerShown: false,
