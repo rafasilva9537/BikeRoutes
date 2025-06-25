@@ -41,7 +41,6 @@ public class BikeRoutesController : ControllerBase
         
         var createdBikeRoute = createBikeRouteDto.ToBikeRoute();
         createdBikeRoute.User = loggedUser;
-        createdBikeRoute.Distance = GeographyUtils.CalculateHaversineDistance(createdBikeRoute.StartPath, createdBikeRoute.EndPath);
         createdBikeRoute.AverageSpeed = createdBikeRoute.Distance / (createdBikeRoute.Duration/60);
         createdBikeRoute.CreatedAt = DateTimeOffset.UtcNow;
         

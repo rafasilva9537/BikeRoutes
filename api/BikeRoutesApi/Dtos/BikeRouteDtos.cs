@@ -20,7 +20,8 @@ public record CreateBikeRouteDto(
     string Image,
     PointDto StartPath,
     PointDto EndPath,
-    double Duration
+    double Duration,
+    double Distance
 );
 
 public record BikeRouteMainInfoDto(

@@ -71,6 +71,7 @@ public static class BikeRouteMappers
             StartPath = new Point(createBikeRouteDto.StartPath.X, createBikeRouteDto.StartPath.Y),
             EndPath = new Point(createBikeRouteDto.EndPath.X, createBikeRouteDto.EndPath.Y),
             Duration = createBikeRouteDto.Duration,
+            Distance = createBikeRouteDto.Distance
         };
     }
 }
