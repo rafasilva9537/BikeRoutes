@@ -29,6 +29,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { CreateBikeRoute } from "@/interfaces/CreateBikeRoute";
 import { API_URL } from "@/constants/api";
+import {useLocalSearchParams} from "expo-router";
 
 // TODO: remove when implement map service on backend
 const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
@@ -52,27 +53,37 @@ type RouteDirection = {
   directions: RouteDirectionCoordinates[];
 }
 
-const fetchRouteDirections = async (origin: MarkerType, destination: MarkerType): Promise<OpenRouteServiceCoordinates[]> => {
+const fetchRouteDirections = async (origin: MarkerType, destination: MarkerType): Promise<RouteDirection> => {
   try {
     const URL = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${API_KEY}&start=${origin.longitude},${origin.latitude}&end=${destination.longitude},${destination.latitude}`;
 
     const response = await axios.get(URL);
     const coordinates: OpenRouteServiceCoordinates[] = response.data.features[0]?.geometry?.coordinates; // BE CAREFULL: Route directions as [longitude, latitude]
+    const distanceInKm: number = response.data.features[0]?.properties?.summary?.distance / 1_000;
 
     if(coordinates){
       console.log("Route directions fetched.");
-      return coordinates;
+
+      const routeDirection = {
+        distance: distanceInKm,
+        directions: coordinates.map(c => ({ latitude: c[1], longitude: c[0] }))
+      }
+      return routeDirection;
+
     } else {
       console.warn("Unable to fetch route directions.");
-      return [];
+      return { distance: 0, directions: [] };
     }
   } catch (error) {
     console.error("Unable to fetch route directions: ", error);
-    return [];
+    return { distance: 0, directions: [] };
   }
 }
 
 const NewRoute = () => {
+  const { id } = useLocalSearchParams();
+  const routeId = Number(id);
+
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [mapRegion, setMapRegion] = useState<Region | null>(null);
   const [markers, setMarkers] = useState<MarkerType[]>([]);
@@ -89,6 +100,7 @@ const NewRoute = () => {
     duration: 0,
     startPath: { x: 0, y: 0 },
     endPath: { x: 0, y: 0 },
+    distance: 0
   });
 
   useEffect(() => {
@@ -130,20 +142,14 @@ const NewRoute = () => {
 
   useEffect(() => {
     const updateRouteDirections = async () => {
-      console.log("Markers length: ", markers.length);
       if(markers.length >= 2) {
         console.log("Fetching route directions...");
-        const openRouteServiceCoordinates = await fetchRouteDirections(markers[0], markers[1]);
-        const formattedDirections: RouteDirectionCoordinates[] = openRouteServiceCoordinates.map(c => ({
-          latitude: c[1],
-          longitude: c[0]
-        }));
+        const routeDirection: RouteDirection = await fetchRouteDirections(markers[0], markers[1]);
 
         setRouteDirection((prevRoute) => ({
           ...prevRoute,
-          directions: formattedDirections
+          ...routeDirection
         }));
-
       }
     }
     updateRouteDirections();
@@ -202,7 +208,8 @@ const NewRoute = () => {
           image: updatedRouteData.image,
           startPath: updatedRouteData.startPath,
           endPath: updatedRouteData.endPath,
-          duration: updatedRouteData.duration
+          duration: updatedRouteData.duration,
+          distance: routeDirection.distance,
         }
       };
 
@@ -322,20 +329,9 @@ const NewRoute = () => {
                 keyboardType="numeric"
                 value={routeData.duration?.toString()}
                 onChangeText={(text) =>
-                  setRouteData({ ...routeData, duration: parseInt(text) })
+                  setRouteData({ ...routeData, duration: text ? parseInt(text) : 0 })
                 }
               />
-
-
-              {/* <Text style={styles.label}>Nota (1-5)</Text>
-              <TextInput
-                style={styles.input}
-                keyboardType="numeric"
-                value={routeData.rating}
-                onChangeText={(text) =>
-                  setRouteData({ ...routeData, rating: text })
-                }
-              /> */}
 
               <TouchableOpacity
                 style={[styles.button, styles.searchButton]}

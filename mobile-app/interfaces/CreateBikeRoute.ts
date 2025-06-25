@@ -5,4 +5,5 @@ export interface CreateBikeRoute {
     startPath: { x: number; y: number };
     endPath: { x: number; y: number };
     duration: number;
+    distance: number;
 }
